@@ -126,7 +126,9 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/inc_horizontal_line" />
+            <include
+                android:id="@+id/inc_horizontal_line"
+                layout="@layout/inc_horizontal_line" />
 
             <!-- Description -->
             <TextView

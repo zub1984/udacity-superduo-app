@@ -1,10 +1,8 @@
 package it.jaschke.alexandria.api;
 
-
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,47 +11,54 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
 
 /**
- * Created by saj on 11/01/15.
+ * BookListAdapter class for populating the book list items
  */
 public class BookListAdapter extends CursorAdapter {
 
-    private final static int BOOK_LIST = 0;
-
-    public static class ViewHolder {
-        @Bind(R.id.bookCover)
-        ImageView bookCover;
-        @Bind(R.id.bookTitle)
-        TextView bookTitle;
-        @Bind(R.id.bookSubTitle)
-        TextView bookSubTitle;
-
-
-        public ViewHolder(View view) {
-           ButterKnife.bind(this, view);
-        }
+    /**
+     * Constructor
+     *
+     * @param context Context
+     * @param cursor  Cursor
+     * @param flags   int
+     */
+    public BookListAdapter(Context context, Cursor cursor, int flags) {
+        super(context, cursor, flags);
     }
 
-    public BookListAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
+    /**
+     * Inflate a new book_list_item view based on the definition in the view holder inner class
+     *
+     * @param context Context
+     * @param cursor  Cursor
+     * @param parent  ViewGroup
+     * @return View
+     */
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = LayoutInflater.from(context).inflate(R.layout.book_list_item, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+        return view;
     }
 
+    /**
+     * Populate the view items from cursor data
+     *
+     * @param view    View
+     * @param context Context
+     * @param cursor  Cursor
+     */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-
         ViewHolder viewHolder = (ViewHolder) view.getTag();
-
         String imgUrl = cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
 
-        Log.v("TAG","imgUrl:"+imgUrl );
-        //new DownloadImage(viewHolder.bookCover).execute(imgUrl);
-
-       Picasso.with(context)
+        Picasso.with(context)
                 .load(imgUrl)
                 .placeholder(R.drawable.ic_launcher)
                 .error(R.drawable.ic_launcher)
@@ -63,18 +68,18 @@ public class BookListAdapter extends CursorAdapter {
         viewHolder.bookSubTitle.setText(cursor.getString(cursor.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE)));
     }
 
-    @Override
-    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        View view = null;
-        int viewType = getItemViewType(cursor.getPosition());
-        switch (viewType) {
-            case BOOK_LIST:
-                int layoutId = R.layout.book_list_item;
-                view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-                ViewHolder viewHolder = new ViewHolder(view);
-                view.setTag(viewHolder);
-                break;
+    /**
+     * Helper class for references to the view items
+     */
+    public static class ViewHolder {
+        public final ImageView bookCover;
+        public final TextView bookTitle;
+        public final TextView bookSubTitle;
+
+        public ViewHolder(View view) {
+            bookCover = (ImageView) view.findViewById(R.id.fullBookCover);
+            bookTitle = (TextView) view.findViewById(R.id.listBookTitle);
+            bookSubTitle = (TextView) view.findViewById(R.id.listBookSubTitle);
         }
-        return view;
     }
 }

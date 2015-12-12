@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/book_list_item_container"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip">
@@ -29,7 +30,6 @@
         android:text="Artificial Intelligence"
         android:textSize="16sp" />
 
-
     <TextView
         android:id="@+id/listBookSubTitle"
         android:layout_width="fill_parent"
@@ -43,6 +43,4 @@
         android:singleLine="true"
         android:text="A Modern Approach"
         android:textSize="12sp" />
-
-
 </RelativeLayout>

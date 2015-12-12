@@ -22,6 +22,7 @@ import java.net.URL;
 import it.jaschke.alexandria.MainActivity;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
+import it.jaschke.alexandria.utils.Constants;
 
 
 /**
@@ -33,11 +34,6 @@ public class BookService extends IntentService {
 
     private final String LOG_TAG = BookService.class.getSimpleName();
 
-    public static final String FETCH_BOOK = "it.jaschke.alexandria.services.action.FETCH_BOOK";
-    public static final String DELETE_BOOK = "it.jaschke.alexandria.services.action.DELETE_BOOK";
-
-    public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
-
     public BookService() {
         super("Alexandria");
     }
@@ -46,11 +42,11 @@ public class BookService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
-            if (FETCH_BOOK.equals(action)) {
-                final String ean = intent.getStringExtra(EAN);
+            if (Constants.FETCH_BOOK.equals(action)) {
+                final String ean = intent.getStringExtra(Constants.EAN);
                 fetchBook(ean);
-            } else if (DELETE_BOOK.equals(action)) {
-                final String ean = intent.getStringExtra(EAN);
+            } else if (Constants.DELETE_BOOK.equals(action)) {
+                final String ean = intent.getStringExtra(Constants.EAN);
                 deleteBook(ean);
             }
         }
@@ -132,6 +128,7 @@ public class BookService extends IntentService {
                 return;
             }
             bookJsonString = buffer.toString();
+            Log.v(LOG_TAG,"parse json book response,bookJsonString:"+bookJsonString);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error ", e);
         } finally {
@@ -148,8 +145,6 @@ public class BookService extends IntentService {
 
         }
 
-
-        Log.v(LOG_TAG,"parse json book response");
         final String ITEMS = "items";
         final String VOLUME_INFO = "volumeInfo";
 

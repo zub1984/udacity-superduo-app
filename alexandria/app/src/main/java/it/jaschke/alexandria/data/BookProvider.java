@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * Created by saj on 24/12/14.
@@ -159,6 +158,7 @@ public class BookProvider extends ContentProvider {
                 String[] bf_projection ={
                         AlexandriaContract.BookEntry.TABLE_NAME + "." + AlexandriaContract.BookEntry.TITLE,
                         AlexandriaContract.BookEntry.TABLE_NAME + "." + AlexandriaContract.BookEntry.IMAGE_URL,
+                        AlexandriaContract.BookEntry.TABLE_NAME + "." + AlexandriaContract.BookEntry.DESC,
                         "group_concat(DISTINCT " + AlexandriaContract.AuthorEntry.TABLE_NAME+ "."+ AlexandriaContract.AuthorEntry.AUTHOR + ") as " + AlexandriaContract.AuthorEntry.AUTHOR,
                         "group_concat(DISTINCT " + AlexandriaContract.CategoryEntry.TABLE_NAME+ "."+ AlexandriaContract.CategoryEntry.CATEGORY +") as " + AlexandriaContract.CategoryEntry.CATEGORY
                 };
