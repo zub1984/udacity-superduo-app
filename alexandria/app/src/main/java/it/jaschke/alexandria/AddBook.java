@@ -136,11 +136,12 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 ean.setText("");
                 break;
             case R.id.cancel_button:
+                if(ean.getText().toString().trim().length()!=13) return;
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(Constants.EAN, ean.getText().toString());
                 bookIntent.setAction(Constants.DELETE_BOOK);
                 getActivity().startService(bookIntent);
-                ean.setText("");
+                clearFields();
                 break;
         }
 
@@ -162,7 +163,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             @Override
             public void afterTextChanged(Editable s) {
                 String eanNumber = "";
-                if (s.length() >= Constants.ISBN_LENGTH_10) {
+                if (s.length() == Constants.ISBN_LENGTH_10 || s.length() == Constants.ISBN_LENGTH_13) {
                     eanNumber = validateISBN(s.toString());
                 }
 
@@ -195,21 +196,19 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
 
 
     private String validateISBN(String eanStr) {
-        String result = eanStr;
         //catch isbn10 numbers
         if (eanStr.length() == Constants.ISBN_LENGTH_10 && !eanStr.startsWith(Integer.toString(Constants.ISBN_PREFIX))) {
-            result = Integer.toString(Constants.ISBN_PREFIX) + eanStr;
+            eanStr = Integer.toString(Constants.ISBN_PREFIX) + eanStr;
         }
         if (eanStr.length() < Constants.ISBN_LENGTH_13) {
-            Toast.makeText(getActivity(), "Enter 13 digit ISBN number!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getActivity(), "Enter 13 digit ISBN number!", Toast.LENGTH_SHORT).show();
             clearFields();
         }
-        return result;
+        return eanStr;
     }
 
 
     private void callBookIntent(String ean) {
-        Log.v(TAG, "start book intent");
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(Constants.EAN, ean);
         bookIntent.setAction(Constants.FETCH_BOOK);
