@@ -19,7 +19,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import it.jaschke.alexandria.MainActivity;
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.utils.Constants;
@@ -149,8 +148,8 @@ public class BookService extends IntentService {
             if (bookJson.has(ITEMS)) {
                 bookArray = bookJson.getJSONArray(ITEMS);
             } else {
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
-                messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.not_found));
+                Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+                messageIntent.putExtra(Constants.MESSAGE_KEY, getResources().getString(R.string.not_found));
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
                 return;
             }

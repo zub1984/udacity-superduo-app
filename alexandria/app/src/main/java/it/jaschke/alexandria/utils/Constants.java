@@ -14,4 +14,15 @@ public class Constants {
     public final static int ISBN_LENGTH_10=10;
     public final static int ISBN_LENGTH_13=13;
 
+    public static final String EAN_CONTENT = "eanContent";
+    public static final String EAN_KEY = "EAN";
+    //public static final String SHARE_ACTION_KEY = "shareActionProvider";
+
+    public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
+    public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
+
+    public static final String BOOK_LIST_TITLE = "bookListTitle";
+    public static final String BOOK_DETAILS_TITLE = "bookListTitle";
+
+
 }

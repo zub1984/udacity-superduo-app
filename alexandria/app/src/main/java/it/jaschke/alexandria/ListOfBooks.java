@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import it.jaschke.alexandria.api.BookListAdapter;
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.data.AlexandriaContract;
+import it.jaschke.alexandria.utils.Constants;
 import it.jaschke.alexandria.utils.EventUtils;
 
 
@@ -44,9 +45,20 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     public ListOfBooks() {
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+            outState.putString(Constants.BOOK_LIST_TITLE, getActivity().getString(R.string.books));
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //fix the issue of title on screen rotation
+        if(null!=savedInstanceState){
+            getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_LIST_TITLE)) ;
+        }
     }
 
     @Override

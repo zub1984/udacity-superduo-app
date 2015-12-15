@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,20 +39,14 @@ import it.jaschke.alexandria.utils.EventUtils;
 public class AddBook extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     private final int LOADER_ID = 1;
-    private View rootView;
-    private final String EAN_CONTENT = "eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
-    private static final String SCAN_CONTENTS = "scanContents";
 
-    private String mScanFormat = "Format:";
-    private String mScanContents = "Contents:";
 
     @Bind(R.id.ean)
     EditText ean;
-    @Bind(R.id.fragment_add_book_id)
+    /*@Bind(R.id.fragment_add_book_id)
     RelativeLayout fragment_add_book_id;
     @Bind(R.id.eancontainer)
-    RelativeLayout ean_container;
+    RelativeLayout ean_container;*/
     @Bind(R.id.search_button)
     ImageButton search_button;
     @Bind(R.id.scan_button)
@@ -87,14 +80,14 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (ean != null) {
-            outState.putString(EAN_CONTENT, ean.getText().toString());
+            outState.putString(Constants.EAN_CONTENT, ean.getText().toString());
         }
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ButterKnife.bind(this, rootView);
 
         eanInputHandler();
@@ -105,7 +98,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         cancel_button.setOnClickListener(this);
 
         if (savedInstanceState != null) {
-            ean.setText(savedInstanceState.getString(EAN_CONTENT));
+            ean.setText(savedInstanceState.getString(Constants.EAN_CONTENT));
             ean.setHint("");
         }
 
@@ -134,6 +127,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 break;
             case R.id.save_button:
                 ean.setText("");
+                clearFields();
                 break;
             case R.id.cancel_button:
                 if(ean.getText().toString().trim().length()!=13) return;
@@ -180,7 +174,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (EventUtils.keyEvent(actionId, event)) {
                     String s = ean.getText().toString().trim();
-                    String eanNumber = validateISBN(s.toString());
+                    String eanNumber = validateISBN(s);
                     Log.v(TAG, "[setOnEditorActionListener] eanNumber:" + eanNumber);
                     if (eanNumber.length() == Constants.ISBN_LENGTH_13) {
                         //Once we have an ISBN, start a book intent
@@ -302,7 +296,6 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                     .error(R.drawable.ic_launcher)
                     .into(bookCover);
 
-            //new DownloadImage((ImageView) rootView.findViewById(R.id.bookCover)).execute(imgUrl);
             bookCover.setVisibility(View.VISIBLE);
         }
 

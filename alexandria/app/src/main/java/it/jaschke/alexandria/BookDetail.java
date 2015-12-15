@@ -1,13 +1,16 @@
 package it.jaschke.alexandria;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +34,7 @@ import it.jaschke.alexandria.utils.Constants;
 
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String EAN_KEY = "EAN";
+
     private final int LOADER_ID = 10;
     private View rootView;
     private String ean;
@@ -55,13 +58,31 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Bind(R.id.delete_button)
     Button delete_button;
 
-    public BookDetail(){
+    public BookDetail() {
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.v("TAG", "onSaveInstanceState:");
+        super.onSaveInstanceState(outState);
+
+        if (ean != null) {
+            outState.putString(Constants.EAN_KEY, ean);
+            outState.putString(Constants.BOOK_DETAILS_TITLE, getString(R.string.details));
+        }
+        //outState.putParcelable(Constants.SHARE_ACTION_KEY, shareActionProvider);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (null != savedInstanceState) {
+            // set the book title on rotation
+            getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_DETAILS_TITLE));
+            ean = savedInstanceState.getString(Constants.EAN_KEY);
+            //getLoaderManager().restartLoader(LOADER_ID, null, this);
+        }
     }
 
 
@@ -69,8 +90,9 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         Bundle arguments = getArguments();
-        if (arguments != null) {
-            ean = arguments.getString(BookDetail.EAN_KEY);
+        if (null != getArguments()) {
+            Log.v("TAG", "Read the passed argument to fragment:");
+            ean = arguments.getString(Constants.EAN_KEY);
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
 
@@ -118,13 +140,19 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             return;
         }
 
+        DatabaseUtils.dumpCursor(data);
+
+        showBookDetails(data);
+
+    }
+
+    private void showBookDetails(Cursor data) {
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         fullBookTitle.setText(bookTitle);
 
         shareBook(bookTitle);
 
         fullBookSubTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE)));
-
         fullBookDesc.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC)));
 
         String authorsName = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
@@ -133,8 +161,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         fullBokAuthors.setText(authorsName.replace(",", "\n"));
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
-           // new DownloadImage((ImageView) rootView.findViewById(R.id.fullBookCover)).execute(imgUrl);
+        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
+
             Picasso.with(getActivity())
                     .load(imgUrl)
                     .placeholder(R.drawable.ic_launcher)
@@ -146,19 +174,21 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         fullBookCategories.setText(categories);
 
-        if(rootView.findViewById(R.id.right_container)!=null){
+        if (rootView.findViewById(R.id.right_container) != null) {
             backButton.setVisibility(View.INVISIBLE);
         }
-
     }
 
 
-    private void shareBook(String bookTitle){
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text)+bookTitle);
-        shareActionProvider.setShareIntent(shareIntent);
+    private void shareBook(String bookTitle) {
+        // To fix the issue of rotation put null check for shareActionProvider
+        if (null != shareActionProvider) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
+            shareActionProvider.setShareIntent(shareIntent);
+        }
     }
 
     @Override
@@ -169,8 +199,21 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onPause() {
         super.onDestroyView();
-        if(MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container)==null){
+        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        //set the book details title on context creation.
+        getActivity().setTitle(R.string.details);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 }
