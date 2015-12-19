@@ -3,7 +3,6 @@ package it.jaschke.alexandria.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Created by saj on 22/12/14.
@@ -41,9 +40,9 @@ public class DbHelper extends SQLiteOpenHelper {
                 AlexandriaContract.BookEntry.TABLE_NAME + " (" + AlexandriaContract.BookEntry._ID + "))";
 
 
-        Log.d("sql-statments",SQL_CREATE_BOOK_TABLE);
+        /*Log.d("sql-statments",SQL_CREATE_BOOK_TABLE);
         Log.d("sql-statments",SQL_CREATE_AUTHOR_TABLE);
-        Log.d("sql-statments",SQL_CREATE_CATEGORY_TABLE);
+        Log.d("sql-statments",SQL_CREATE_CATEGORY_TABLE);*/
 
         db.execSQL(SQL_CREATE_BOOK_TABLE);
         db.execSQL(SQL_CREATE_AUTHOR_TABLE);
@@ -53,6 +52,6 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // do nothing as database tables and columns did not changed
     }
 }

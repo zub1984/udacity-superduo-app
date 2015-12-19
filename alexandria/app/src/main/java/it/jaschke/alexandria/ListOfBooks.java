@@ -25,7 +25,6 @@ import butterknife.ButterKnife;
 import it.jaschke.alexandria.api.BookListAdapter;
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.data.AlexandriaContract;
-import it.jaschke.alexandria.utils.Constants;
 import it.jaschke.alexandria.utils.EventUtils;
 
 
@@ -49,16 +48,11 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-            outState.putString(Constants.BOOK_LIST_TITLE, getActivity().getString(R.string.books));
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //fix the issue of title on screen rotation
-        if(null!=savedInstanceState){
-            getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_LIST_TITLE)) ;
-        }
     }
 
     @Override
@@ -66,6 +60,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
         View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
         ButterKnife.bind(this, rootView);
+
         editTextHandler();
         searchButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -88,6 +83,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                 }
             }
         });
+
+        getActivity().setTitle(R.string.books);
 
         return rootView;
     }
@@ -126,7 +123,7 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
                     } else {
                         Toast.makeText(getActivity(), "Enter minimum 2 characters!", Toast.LENGTH_SHORT);
                     }
-                    searchText.requestFocus();
+                    //searchText.requestFocus();
                 }
                 return true;
             }
@@ -194,7 +191,6 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        getActivity().setTitle(R.string.books);
     }
 
     @Override

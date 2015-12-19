@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingTop="?attr/actionBarSize"
     tools:context="it.jaschke.alexandria.AddBook">
 
 
@@ -21,7 +22,7 @@
             android:id="@+id/ean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/input_hint"
+            android:hint="@string/input_isbn_hint"
             android:inputType="number"
             android:maxLength="@integer/ean_size"
             android:maxLines="1"
@@ -73,8 +74,7 @@
                     android:id="@+id/bookCover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:contentDescription="@string/book_cover"
-                    android:src="@drawable/ic_launcher" />
+                    android:contentDescription="@string/book_cover"/>
 
 
                 <!-- book preview details -->
@@ -82,24 +82,22 @@
                     android:id="@+id/bookTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/book_title"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:textIsSelectable="true"
                     android:textSize="@dimen/head_line"
-                    android:textStyle="bold"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/bookSubTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/bookTitle"
                     android:layout_marginTop="10dp"
                     android:ellipsize="end"
-                    android:maxLines="3"
-                    android:text="@string/book_subtitle"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:maxLines="3"/>
 
                 <TextView
                     android:id="@+id/authors"
@@ -108,7 +106,6 @@
                     android:layout_below="@+id/bookCover"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:text="@string/book_author"
                     android:textSize="@dimen/small_fontsize" />
 
 
@@ -116,13 +113,12 @@
                     android:id="@+id/categories"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@+id/bookSubTitle"
                     android:layout_marginTop="20dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
                     android:gravity="center"
-                    android:text="@string/book_category"
-                    android:textSize="@dimen/small_fontsize"/>
+                    android:textSize="@dimen/small_fontsize" />
 
             </RelativeLayout>
 
@@ -139,7 +135,6 @@
                 android:layout_marginTop="5dp"
                 android:ellipsize="end"
                 android:fontFamily="sans-serif-condensed"
-                android:text="@string/book_desc"
                 android:textSize="14sp" />
         </LinearLayout>
     </ScrollView>

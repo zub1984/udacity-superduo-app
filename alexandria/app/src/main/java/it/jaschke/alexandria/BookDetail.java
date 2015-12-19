@@ -68,7 +68,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         if (ean != null) {
             outState.putString(Constants.EAN_KEY, ean);
-            outState.putString(Constants.BOOK_DETAILS_TITLE, getString(R.string.details));
+            //outState.putString(Constants.BOOK_DETAILS_TITLE, getString(R.string.details));
         }
         //outState.putParcelable(Constants.SHARE_ACTION_KEY, shareActionProvider);
     }
@@ -79,7 +79,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         setHasOptionsMenu(true);
         if (null != savedInstanceState) {
             // set the book title on rotation
-            getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_DETAILS_TITLE));
+            //getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_DETAILS_TITLE));
             ean = savedInstanceState.getString(Constants.EAN_KEY);
             //getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
@@ -109,6 +109,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+
+        getActivity().setTitle(R.string.details);
 
         return rootView;
     }
@@ -207,8 +209,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        //set the book details title on context creation.
-        getActivity().setTitle(R.string.details);
     }
 
     @Override

@@ -10,11 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
@@ -28,36 +29,74 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
      */
     private NavigationDrawerFragment navigationDrawerFragment;
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence title;
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReciever;
+    // reference to the app title textview in the toolbar
+    private TextView mToolbarTitle;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         IS_TABLET = isTablet();
-        if(IS_TABLET){
+        if (IS_TABLET) {
             setContentView(R.layout.activity_main_tablet);
-        }else {
+        } else {
             setContentView(R.layout.activity_main);
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
+
+
         messageReciever = new MessageReciever();
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever,filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+
+        // get the mTitle of the activity
         title = getTitle();
+        // set the toolbar title to the name of the app
+        mToolbarTitle.setText(R.string.app_name);
+
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+
+        // get the saved state vars
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("title_name")) {
+                title = savedInstanceState.getString("title_name", null);
+            }
+        }
     }
+
+
+
+    /**
+     * Save the the current state before leaving the activity
+     *
+     * @param outState Bundle
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString("title_name", title.toString());
+    }
+
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -65,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment;
 
-        switch (position){
+        switch (position) {
             default:
             case 0:
                 nextFragment = new ListOfBooks();
@@ -87,24 +126,21 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     public void setTitle(int titleId) {
         title = getString(titleId);
-    }
-
-    public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(title);
+        // update the toolbar title textview
+        mToolbarTitle.setText(title);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!navigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
+            // restore the toolbar title
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                mToolbarTitle.setText(title);
+            }
+
             return true;
         }
         return super.onCreateOptionsMenu(menu);
@@ -140,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         fragment.setArguments(args);
 
         int id = R.id.container;
-        if(findViewById(R.id.right_container) != null){
+        if (findViewById(R.id.right_container) != null) {
             id = R.id.right_container;
         }
         getSupportFragmentManager().beginTransaction()
@@ -153,13 +189,13 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     private class MessageReciever extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(intent.getStringExtra(Constants.MESSAGE_KEY)!=null){
+            if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
                 Toast.makeText(MainActivity.this, intent.getStringExtra(Constants.MESSAGE_KEY), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    public void goBack(View view){
+    public void goBack(View view) {
         getSupportFragmentManager().popBackStack();
     }
 
@@ -171,11 +207,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
-        if(getSupportFragmentManager().getBackStackEntryCount()<2){
+        if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
             finish();
         }
         super.onBackPressed();
     }
-
 
 }

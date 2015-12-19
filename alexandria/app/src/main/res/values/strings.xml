@@ -7,13 +7,14 @@
     <string name="scan">Add Book</string>
     <string name="about">About</string>
     <string name="details">Book Details</string>
+    <string name="settings">Settings</string>
 
     <string name="navigation_drawer_open" >Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="scan_button">Scan</string>
-    <string name="input_hint">Input 13 Digits ISBN</string>
-    <string name="book_cover">Bookcover</string>
+    <string name="scan_button">Scan book barcode</string>
+    <string name="input_isbn_hint">Input 13 Digits ISBN number</string>
+    <string name="book_cover">Book cover</string>
 
     <string name="ok_button">Next</string>
     <string name="cancel_button">Cancel</string>
@@ -21,7 +22,9 @@
     <string name="search">Search</string>
     <string name="delete">Delete Book</string>
     <string name="pref_startScreen">Select Startscreen</string>
+
     <string name="title_activity_settings">Settings</string>
+
     <string name="action_share">Share</string>
     <string name="back_button">go back</string>
     <string name="share_text">A must read book: </string>
@@ -36,6 +39,12 @@
     <string name="book_desc">Presents a guide to artificial intelligence, covering such topics as intelligent agents, problem-solving, logical agents, planning, uncertainty, learning, and robotics.</string>
     <string name="book_author">Stuart Jonathan Russell</string>
     <string name="book_category">Computers</string>
+
+    <string name="search_button">Search a book</string>
+    <string name="save_button">Save</string>
+    <string name="search_hint">Search the book</string>
+
+    <string name="scan_bar_code">Scan a barcode</string>
 
 
 </resources>

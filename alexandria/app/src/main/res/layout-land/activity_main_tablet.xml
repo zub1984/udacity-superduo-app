@@ -5,6 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!-- Toolbar -->
+    <include layout="@layout/toolbar" />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
