@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -38,12 +39,6 @@ import it.jaschke.alexandria.utils.EventUtils;
 public class AddBook extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
     private final int LOADER_ID = 1;
-
-
-    /*@Bind(R.id.fragment_add_book_id)
-    RelativeLayout fragment_add_book_id;
-    @Bind(R.id.eancontainer)
-    RelativeLayout ean_container;*/
 
     @Nullable
     @Bind(R.id.ean)
@@ -78,6 +73,13 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     Button cancel_button;
     @Bind(R.id.save_button)
     Button save_button;
+
+    @Bind(R.id.inc_no_connection)
+    View inc_no_connection;
+
+    @Bind(R.id.inc_book_preview)
+    View inc_book_preview;
+
 
     public AddBook() {
     }
@@ -119,6 +121,8 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 String eanNumber = validateISBN(ean.getText().toString().trim());
                 if (eanNumber.length() == Constants.ISBN_LENGTH_13) {
                     callBookIntent(eanNumber);
+                    ean.setHint("");
+                    EventUtils.hideKeyboard(getActivity());
                 }
                 ean.requestFocus();
                 break;
@@ -127,7 +131,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 break;
             case R.id.save_button:
                 ean.setText("");
-                clearFields();
+                clearViews();
                 break;
             case R.id.cancel_button:
                 if(ean.getText().toString().trim().length()!=13) return;
@@ -135,7 +139,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 bookIntent.putExtra(Constants.EAN, ean.getText().toString());
                 bookIntent.setAction(Constants.DELETE_BOOK);
                 getActivity().startService(bookIntent);
-                clearFields();
+                clearViews();
                 break;
         }
 
@@ -179,7 +183,6 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                         //Once we have an ISBN, start a book intent
                         callBookIntent(eanNumber);
                     }
-
                     ean.requestFocus();
                 }
                 return true;
@@ -195,18 +198,30 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         }
         if (eanStr.length() < Constants.ISBN_LENGTH_13) {
             //Toast.makeText(getActivity(), "Enter 13 digit ISBN number!", Toast.LENGTH_SHORT).show();
-            clearFields();
+            ean.setHint("");
+            ean.setError(getString(R.string.input_isbn_hint));
         }
         return eanStr;
     }
 
 
     private void callBookIntent(String ean) {
-        Intent bookIntent = new Intent(getActivity(), BookService.class);
-        bookIntent.putExtra(Constants.EAN, ean);
-        bookIntent.setAction(Constants.FETCH_BOOK);
-        getActivity().startService(bookIntent);
-        AddBook.this.restartLoader();
+        if(EventUtils.isNetworkAvailable(getContext())){
+            Intent bookIntent = new Intent(getActivity(), BookService.class);
+            bookIntent.putExtra(Constants.EAN, ean);
+            bookIntent.setAction(Constants.FETCH_BOOK);
+            getActivity().startService(bookIntent);
+            AddBook.this.restartLoader();
+            EventUtils.hideKeyboard(getActivity());
+        }
+        else{
+            //display no connection
+            Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
+            inc_no_connection.setVisibility(View.VISIBLE);
+            inc_book_preview.setVisibility(View.GONE);
+            EventUtils.hideKeyboard(getActivity());
+        }
+
     }
 
     private void scanBarCode() {
@@ -281,6 +296,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     private void setBookPreView(Cursor data) {
         View view = getView();
         if(null!=view){
+            inc_book_preview.setVisibility(View.VISIBLE);
             bookTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE)));
             bookSubTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE)));
 
@@ -297,15 +313,10 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                         .placeholder(R.drawable.ic_launcher)
                         .error(R.drawable.ic_launcher)
                         .into(bookCover);
-
-                bookCover.setVisibility(View.VISIBLE);
             }
 
             categories.setText(data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY)));
             bookDescription.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC)));
-
-            save_button.setVisibility(View.VISIBLE);
-            cancel_button.setVisibility(View.VISIBLE);
         }
         EventUtils.hideKeyboard(getActivity());
     }
@@ -316,20 +327,12 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
 
     }
 
-    private void clearFields() {
+    private void clearViews() {
         View view = getView();
         if (view != null) {
-            bookTitle.setText("");
-            bookSubTitle.setText("");
-            authors.setText("");
-            categories.setText("");
-            bookDescription.setText("");
-            inc_horizontal_line.setVisibility(View.INVISIBLE);
-            bookCover.setVisibility(View.INVISIBLE);
-            save_button.setVisibility(View.INVISIBLE);
-            cancel_button.setVisibility(View.INVISIBLE);
+            inc_book_preview.setVisibility(View.GONE);
+            inc_no_connection.setVisibility(View.GONE);
         }
-
     }
 
     @Override

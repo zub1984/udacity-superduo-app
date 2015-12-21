@@ -26,4 +26,9 @@
         <item name="colorAccent">@color/primary</item>
     </style>
 
+    <style name="ErrorText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textStyle">bold|italic</item>
+        <item name="android:textColor">@color/material_red600</item>
+    </style>
+
 </resources>
