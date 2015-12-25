@@ -37,8 +37,8 @@ import it.jaschke.alexandria.utils.EventUtils;
 
 
 public class AddBook extends Fragment implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
-    private final int LOADER_ID = 1;
+    private static final String TAG_TAG = AddBook.class.getSimpleName();
+   // private final int LOADER_ID = 1;
 
     @Nullable
     @Bind(R.id.ean)
@@ -63,10 +63,6 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     @Bind(R.id.categories)
     TextView categories;
 
-    @Nullable
-    @Bind(R.id.inc_horizontal_line)
-    View inc_horizontal_line;
-
     @Bind(R.id.bookDescription)
     TextView bookDescription;
     @Bind(R.id.cancel_button)
@@ -77,6 +73,15 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     @Bind(R.id.inc_no_connection)
     View inc_no_connection;
 
+    @Bind(R.id.textErrorHandler)
+    TextView textErrorHandler;
+
+    @Bind(R.id.imageErrorHandler)
+    ImageView imageErrorHandler;
+
+   /* @Bind(R.id.inc_no_book_found)
+    View inc_no_book_found;
+*/
     @Bind(R.id.inc_book_preview)
     View inc_book_preview;
 
@@ -97,7 +102,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         View rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && ean != null) {
             ean.setText(savedInstanceState.getString(Constants.EAN_CONTENT));
         }
 
@@ -109,13 +114,14 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         cancel_button.setOnClickListener(this);
 
         getActivity().setTitle(R.string.scan);
-
+        clearViews();
         return rootView;
     }
 
 
     @Override
     public void onClick(View v) {
+        clearViews();
         switch (v.getId()) {
             case R.id.search_button:
                 String eanNumber = validateISBN(ean.getText().toString().trim());
@@ -131,15 +137,13 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                 break;
             case R.id.save_button:
                 ean.setText("");
-                clearViews();
                 break;
             case R.id.cancel_button:
-                if(ean.getText().toString().trim().length()!=13) return;
+                if (ean.getText().toString().trim().length() != 13) return;
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(Constants.EAN, ean.getText().toString());
                 bookIntent.setAction(Constants.DELETE_BOOK);
                 getActivity().startService(bookIntent);
-                clearViews();
                 break;
         }
 
@@ -161,7 +165,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             @Override
             public void afterTextChanged(Editable s) {
                 String eanNumber = "";
-                if (s.length() == Constants.ISBN_LENGTH_10 || s.length() == Constants.ISBN_LENGTH_13) {
+                if (s.length() >= Constants.ISBN_LENGTH_10 && s.length() == Constants.ISBN_LENGTH_13) {
                     eanNumber = validateISBN(s.toString());
                 }
 
@@ -197,8 +201,8 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             eanStr = Integer.toString(Constants.ISBN_PREFIX) + eanStr;
         }
         if (eanStr.length() < Constants.ISBN_LENGTH_13) {
-            //Toast.makeText(getActivity(), "Enter 13 digit ISBN number!", Toast.LENGTH_SHORT).show();
-            ean.setHint("");
+            ean.setText("");
+            if(eanStr.startsWith(Integer.toString(Constants.ISBN_PREFIX))&& eanStr.length()>= Constants.ISBN_LENGTH_10)
             ean.setError(getString(R.string.input_isbn_hint));
         }
         return eanStr;
@@ -206,19 +210,19 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
 
 
     private void callBookIntent(String ean) {
-        if(EventUtils.isNetworkAvailable(getContext())){
+        if (EventUtils.isNetworkAvailable(getContext())) {
             Intent bookIntent = new Intent(getActivity(), BookService.class);
             bookIntent.putExtra(Constants.EAN, ean);
             bookIntent.setAction(Constants.FETCH_BOOK);
             getActivity().startService(bookIntent);
             AddBook.this.restartLoader();
             EventUtils.hideKeyboard(getActivity());
-        }
-        else{
+        } else {
             //display no connection
+            inc_book_preview.setVisibility(View.GONE);
             Toast.makeText(getActivity(), getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
             inc_no_connection.setVisibility(View.VISIBLE);
-            inc_book_preview.setVisibility(View.GONE);
+            textErrorHandler.setText(getString(R.string.no_internet_connection));
             EventUtils.hideKeyboard(getActivity());
         }
 
@@ -250,16 +254,15 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         if (null != result) {
             if (null != result.getContents()) {
                 String isbn = result.getContents();
-                Log.v(TAG, "scanning is success, isbn:" + isbn);
                 ean.setText(isbn);
             } else {
-                Log.v(TAG, "scanning failed or cancelled!");
+                Log.v(TAG_TAG, getString(R.string.scan_failed_or_cancel));
             }
         }
     }
 
     private void restartLoader() {
-        getLoaderManager().restartLoader(LOADER_ID, null, this);
+        getLoaderManager().restartLoader(Constants.ADD_BOOK_LOADER_ID, null, this);
     }
 
     @Override
@@ -268,8 +271,8 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             return null;
         }
         String eanStr = ean.getText().toString().trim();
-        if (eanStr.length() == Constants.ISBN_LENGTH_10 && !eanStr.startsWith(Integer.toString(Constants.ISBN_LENGTH_13))) {
-            eanStr = Integer.toString(Constants.ISBN_LENGTH_13) + eanStr;
+        if (eanStr.length() == Constants.ISBN_LENGTH_10 && !eanStr.startsWith(Integer.toString(Constants.ISBN_PREFIX))) {
+            eanStr = Integer.toString(Constants.ISBN_PREFIX) + eanStr;
         }
         return new CursorLoader(
                 getActivity(),
@@ -287,7 +290,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             return;
         }
         switch (loader.getId()) {
-            case LOADER_ID:
+            case Constants.ADD_BOOK_LOADER_ID:
                 //DatabaseUtils.dumpCursor(data);
                 setBookPreView(data);
         }
@@ -295,15 +298,18 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
 
     private void setBookPreView(Cursor data) {
         View view = getView();
-        if(null!=view){
+        if (null != view) {
             inc_book_preview.setVisibility(View.VISIBLE);
             bookTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE)));
             bookSubTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE)));
 
             String authorsName = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-            String[] authorsArr = authorsName.split(",");
-            authors.setLines(authorsArr.length);
-            authors.setText(authorsName.replace(",", "\n"));
+            //check if authors name is available
+            if (null != authorsName) {
+                String[] authorsArr = authorsName.split(",");
+                authors.setLines(authorsArr.length);
+                authors.setText(authorsName.replace(",", "\n"));
+            }
 
             String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
             if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
@@ -314,7 +320,6 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
                         .error(R.drawable.ic_launcher)
                         .into(bookCover);
             }
-
             categories.setText(data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY)));
             bookDescription.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC)));
         }
@@ -334,6 +339,33 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
             inc_no_connection.setVisibility(View.GONE);
         }
     }
+
+    public void displayErrorView(Intent intent) {
+        View view = getView();
+        if (view != null) {
+            inc_book_preview.setVisibility(View.GONE);
+            inc_no_connection.setVisibility(View.VISIBLE);
+            if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
+                Toast.makeText(getActivity(), intent.getStringExtra(Constants.MESSAGE_KEY), Toast.LENGTH_LONG).show();
+                imageErrorHandler.setAdjustViewBounds(true);
+                imageErrorHandler.setImageResource(R.drawable.ic_stat_library);
+                textErrorHandler.setText(getString(R.string.not_found));
+            }
+            else if(intent.getStringExtra(Constants.MESSAGE_KEY_IO_EXCEPTION) != null){
+                Toast.makeText(getActivity(), intent.getStringExtra(Constants.MESSAGE_KEY_IO_EXCEPTION), Toast.LENGTH_LONG).show();
+                imageErrorHandler.setAdjustViewBounds(true);
+                imageErrorHandler.setImageResource(R.drawable.ic_cloud_off_dark);
+                textErrorHandler.setText(getString(R.string.io_error_or_timeout));
+            }
+            else if(intent.getStringExtra(Constants.MESSAGE_KEY_BAD_RESPONSE) != null){
+                Toast.makeText(getActivity(), intent.getStringExtra(Constants.MESSAGE_KEY_BAD_RESPONSE), Toast.LENGTH_LONG).show();
+                imageErrorHandler.setAdjustViewBounds(true);
+                imageErrorHandler.setImageResource(R.drawable.ic_cloud_off_dark);
+                textErrorHandler.setText(getString(R.string.bad_response));
+            }
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {

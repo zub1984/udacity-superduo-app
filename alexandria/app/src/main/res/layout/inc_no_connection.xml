@@ -7,23 +7,21 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    android:visibility="gone">
+    android:visibility="gone"
+    android:weightSum="1">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:id="@+id/imageErrorHandler"
+        style="@style/errorImage"
         android:contentDescription="@string/no_internet_connection"
         android:src="@drawable/ic_cloud_off_dark" />
 
     <TextView
+        android:id="@+id/textErrorHandler"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="@string/no_internet_connection"
-        android:textSize="@dimen/subtitle_text_size" />
-
+        style="@style/errorMessage"
+        android:text="@string/no_internet_connection"/>
 </LinearLayout>
 
 

@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import it.jaschke.alexandria.R;
 import it.jaschke.alexandria.data.AlexandriaContract;
@@ -53,7 +54,8 @@ public class BookService extends IntentService {
 
     /**
      * delete book from database
-     * ean : ISBN number of the book to be deleted.
+     *
+     * @param ean : ISBN number of the book to be deleted.
      */
     private void deleteBook(String ean) {
         if (ean != null) {
@@ -64,6 +66,8 @@ public class BookService extends IntentService {
     /**
      * Handle action fetchBook in the provided background thread with the provided
      * parameters.
+     *
+     * @param ean number of the book.
      */
     private void fetchBook(String ean) {
 
@@ -79,24 +83,29 @@ public class BookService extends IntentService {
                 null  // sort order
         );
 
-        if (bookEntry.getCount() > 0) {
+        if (null != bookEntry && bookEntry.getCount() > 0) {
             bookEntry.close();
             return;
         }
 
-        bookEntry.close();
         callBookApi(ean);
     }
 
+
+    /**
+     * fetch book details using google library API
+     *
+     * @param ean number of the book.
+     */
     private void callBookApi(final String ean) {
 
         //https://www.googleapis.com/books/v1/volumes?q=isbn%3A9780137903955
         final String FORECAST_BASE_URL = "https://www.googleapis.com/books/v1/volumes?";
         final String QUERY_PARAM = "q";
-
         final String ISBN_PARAM = "isbn:" + ean;
-
         OkHttpClient client = new OkHttpClient();
+        client.setConnectTimeout(Constants.CONNECTION_AND_READ_TIME_OUT, TimeUnit.SECONDS); // connect timeout
+        client.setReadTimeout(Constants.CONNECTION_AND_READ_TIME_OUT, TimeUnit.SECONDS);    // socket timeout
         String builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
                 .appendQueryParameter(QUERY_PARAM, ISBN_PARAM)
                 .build().toString();
@@ -109,31 +118,40 @@ public class BookService extends IntentService {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                Log.e(LOG_TAG, "==onFailure[callBookApi]:", e);
-                return;
+                Log.v(LOG_TAG, "onFailure - [IOException] ");
+                Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+                messageIntent.putExtra(Constants.MESSAGE_KEY_IO_EXCEPTION, getResources().getString(R.string.io_error_or_timeout));
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
                 try {
                     String jsonData = response.body().string();
-                    Log.v(LOG_TAG, "jsonData:" + jsonData);
                     if (response.isSuccessful()) {
                         parseJsonData(ean, jsonData);
                     }
                 } catch (IOException e) {
-                    Log.e(LOG_TAG, "IOException: Exception caught: ", e);
-                    return;
+                    Log.v(LOG_TAG, "onResponse - [IOException] ");
+                    Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+                    messageIntent.putExtra(Constants.MESSAGE_KEY_IO_EXCEPTION, getResources().getString(R.string.io_error_or_timeout));
+                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
                 }
             }
         });
     }
 
+    /**
+     * parse json response received from google library API.
+     *
+     * @param ean            number of the book.
+     * @param bookJsonString json response received from google API.
+     */
+
     private void parseJsonData(String ean, String bookJsonString) {
 
         final String ITEMS = "items";
         final String VOLUME_INFO = "volumeInfo";
-
         final String TITLE = "title";
         final String SUBTITLE = "subtitle";
         final String AUTHORS = "authors";
@@ -141,7 +159,6 @@ public class BookService extends IntentService {
         final String CATEGORIES = "categories";
         final String IMG_URL_PATH = "imageLinks";
         final String IMG_URL = "thumbnail";
-
         try {
             JSONObject bookJson = new JSONObject(bookJsonString);
             JSONArray bookArray;
@@ -155,9 +172,7 @@ public class BookService extends IntentService {
             }
 
             JSONObject bookInfo = ((JSONObject) bookArray.get(0)).getJSONObject(VOLUME_INFO);
-
             String title = bookInfo.getString(TITLE);
-
             String subtitle = "";
             if (bookInfo.has(SUBTITLE)) {
                 subtitle = bookInfo.getString(SUBTITLE);
@@ -183,11 +198,23 @@ public class BookService extends IntentService {
             }
 
         } catch (JSONException e) {
-            Log.e(LOG_TAG, "Error ", e);
+            Log.e(LOG_TAG, "JSONException ", e);
+            Intent messageIntent = new Intent(Constants.MESSAGE_EVENT);
+            messageIntent.putExtra(Constants.MESSAGE_KEY_BAD_RESPONSE, getResources().getString(R.string.bad_response));
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
         }
     }
 
 
+    /**
+     * write book details in database.
+     *
+     * @param ean      number of the book.
+     * @param title    of the book.
+     * @param subtitle of the book.
+     * @param desc     of the book.
+     * @param imgUrl   of the book.
+     */
     private void writeBackBook(String ean, String title, String subtitle, String desc, String imgUrl) {
         ContentValues values = new ContentValues();
         values.put(AlexandriaContract.BookEntry._ID, ean);
@@ -198,6 +225,12 @@ public class BookService extends IntentService {
         getContentResolver().insert(AlexandriaContract.BookEntry.CONTENT_URI, values);
     }
 
+    /**
+     * write book author details in database.
+     *
+     * @param ean       number of the book.
+     * @param jsonArray containing author's details.
+     */
     private void writeBackAuthors(String ean, JSONArray jsonArray) throws JSONException {
         ContentValues values = new ContentValues();
         for (int i = 0; i < jsonArray.length(); i++) {
@@ -208,6 +241,12 @@ public class BookService extends IntentService {
         }
     }
 
+    /**
+     * write book categories details in database.
+     *
+     * @param ean       number of the book.
+     * @param jsonArray containing categories details.
+     */
     private void writeBackCategories(String ean, JSONArray jsonArray) throws JSONException {
         ContentValues values = new ContentValues();
         for (int i = 0; i < jsonArray.length(); i++) {

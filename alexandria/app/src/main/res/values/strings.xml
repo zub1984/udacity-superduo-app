@@ -45,8 +45,12 @@
     <string name="search_hint">Search the book</string>
 
     <string name="scan_bar_code">Scan a barcode</string>
+    <string name="scan_failed_or_cancel">Scanning failed or canceled.</string>
 
     <string name="no_internet_connection">No internet connection</string>
+    <string name="io_error_or_timeout">IO Error OR timeout.</string>
+    <string name="bad_response">Bad response from server.</string>
+
 
 
 </resources>

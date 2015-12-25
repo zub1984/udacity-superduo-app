@@ -31,4 +31,73 @@
         <item name="android:textColor">@color/material_red600</item>
     </style>
 
-</resources>
+
+    <!-- start: book list item style -->
+    <style name="bookListItemContainer">
+        <item name="android:paddingLeft">@dimen/padding_left_16dp</item>
+        <item name="android:paddingRight">@dimen/padding_right_16dp</item>
+    </style>
+
+
+    <style name="bookCoverImage">
+        <item name="android:layout_width">@dimen/book_cover_width</item>
+        <item name="android:layout_height">@dimen/book_cover_height</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:padding">@dimen/padding_1dp</item>
+        <item name="android:background">@color/cover_na_grey</item>
+        <item name="android:src">@drawable/ic_launcher</item>
+    </style>
+
+
+    <style name="bookTitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingTop">@dimen/padding_4dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="bookSubTitle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:paddingBottom">@dimen/padding_4dp</item>
+    </style>
+
+    <!-- end: book list item style -->
+
+    <!-- start: about style -->
+    <style name="bodyContentType" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:layout_marginTop">@dimen/margin_from_toolbar</item>
+        <item name="android:paddingLeft">@dimen/padding_left_16dp</item>
+        <item name="android:paddingRight">@dimen/padding_right_16dp</item>
+    </style>
+    <!-- end: about style -->
+
+    <!-- start: error image and message style -->
+    <style name="errorImage">
+        <item name="android:layout_width">@dimen/error_image_width</item>
+        <item name="android:layout_height">@dimen/error_image_height</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="errorMessage" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">@color/colorPrimaryDark</item></resources>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/text_margin_top_20dp</item>
+    </style>
+
+    <!-- end: error image and message style -->
+
+    <style name="bookDetailTitle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/colorSecondaryText</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_margin">@dimen/text_book_detail_margin_5dp</item>
+    </style>
+
+
+

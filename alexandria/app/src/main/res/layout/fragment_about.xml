@@ -5,11 +5,10 @@
     android:paddingTop="?attr/actionBarSize"
     tools:context="it.jaschke.alexandria.About">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
+        style="@style/bodyContentType"
         android:text="@string/about_text" />
 
 </FrameLayout>

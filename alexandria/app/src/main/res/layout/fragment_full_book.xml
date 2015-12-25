@@ -8,6 +8,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:paddingLeft="@dimen/padding_left_16dp"
+        android:paddingRight="@dimen/padding_right_16dp"
         android:orientation="vertical">
 
         <ScrollView
@@ -24,16 +26,14 @@
 
                 <TextView
                     android:id="@+id/fullBookTitle"
-                    android:layout_width="fill_parent"
+                    style="@style/bookDetailTitle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="10dp"
-                    android:paddingRight="20dp"
-                    android:textIsSelectable="true"
-                    android:textSize="@dimen/head_line"
-                    android:textStyle="bold" />
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"/>
 
                 <ImageView
                     android:id="@+id/fullBookCover"
@@ -98,13 +98,14 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/fullBookTitle"
+                    android:layout_alignBottom="@+id/fullBookTitle"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
-                    android:layout_alignRight="@+id/fullBookTitle"
-                    android:layout_gravity="right|top"
+                    android:layout_gravity="end|top"
                     android:contentDescription="@string/back_button"
                     android:onClick="goBack"
-                    android:src="@drawable/ic_action_undo" />
+                    android:src="@drawable/ic_action_undo"/>
 
 
             </RelativeLayout>

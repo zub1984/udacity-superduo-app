@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="?attr/actionBarSize"
+    android:paddingLeft="@dimen/padding_left_16dp"
+    android:paddingRight="@dimen/padding_right_16dp"
     tools:context="it.jaschke.alexandria.AddBook">
 
     <!-- Search book and scan button container -->
@@ -14,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout

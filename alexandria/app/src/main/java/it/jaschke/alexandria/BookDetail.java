@@ -10,7 +10,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,14 +62,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.v("TAG", "onSaveInstanceState:");
         super.onSaveInstanceState(outState);
 
         if (ean != null) {
             outState.putString(Constants.EAN_KEY, ean);
-            //outState.putString(Constants.BOOK_DETAILS_TITLE, getString(R.string.details));
         }
-        //outState.putParcelable(Constants.SHARE_ACTION_KEY, shareActionProvider);
     }
 
     @Override
@@ -78,10 +74,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (null != savedInstanceState) {
-            // set the book title on rotation
-            //getActivity().setTitle(savedInstanceState.getString(Constants.BOOK_DETAILS_TITLE));
             ean = savedInstanceState.getString(Constants.EAN_KEY);
-            //getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
     }
 
@@ -91,7 +84,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         Bundle arguments = getArguments();
         if (null != getArguments()) {
-            Log.v("TAG", "Read the passed argument to fragment:");
             ean = arguments.getString(Constants.EAN_KEY);
             getLoaderManager().restartLoader(LOADER_ID, null, this);
         }
@@ -158,9 +150,11 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         fullBookDesc.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC)));
 
         String authorsName = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authorsName.split(",");
-        fullBokAuthors.setLines(authorsArr.length);
-        fullBokAuthors.setText(authorsName.replace(",", "\n"));
+        if(null!=authorsName){
+            String[] authorsArr = authorsName.split(",");
+            fullBokAuthors.setLines(authorsArr.length);
+            fullBokAuthors.setText(authorsName.replace(",", "\n"));
+        }
 
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
         if (Patterns.WEB_URL.matcher(imgUrl).matches()) {

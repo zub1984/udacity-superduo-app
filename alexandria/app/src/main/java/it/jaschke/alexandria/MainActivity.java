@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.utils.Constants;
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     private CharSequence title;
     public static boolean IS_TABLET = false;
-    private BroadcastReceiver messageReciever;
+    private BroadcastReceiver messageReceiver;
     // reference to the app title textview in the toolbar
     private TextView mToolbarTitle;
 
@@ -55,9 +54,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
 
-        messageReciever = new MessageReciever();
+        messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(messageReciever, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
 
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
-
         // get the saved state vars
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("title_name")) {
@@ -83,24 +81,21 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     }
 
 
-
     /**
      * Save the the current state before leaving the activity
      *
      * @param outState Bundle
      */
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("title_name", title.toString());
     }
 
 
-
     @Override
     public void onNavigationDrawerItemSelected(int position) {
-
+        String tagName = "";
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment;
 
@@ -111,6 +106,8 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 break;
             case 1:
                 nextFragment = new AddBook();
+                tagName = Constants.ADD_BOOK_FRAGMENT_TAG;
+
                 break;
             case 2:
                 nextFragment = new About();
@@ -119,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
 
         fragmentManager.beginTransaction()
-                .replace(R.id.container, nextFragment)
+                .replace(R.id.container, nextFragment, tagName)
                 .addToBackStack((String) title)
                 .commit();
     }
@@ -163,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     @Override
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReciever);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
         super.onDestroy();
     }
 
@@ -181,16 +178,17 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(id, fragment)
-                .addToBackStack("Book Detail")
+                .addToBackStack(Constants.BOOK_DETAIL_FRAGMENT_TAG)  //"Book Detail"
                 .commit();
 
     }
 
-    private class MessageReciever extends BroadcastReceiver {
+    private class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getStringExtra(Constants.MESSAGE_KEY) != null) {
-                Toast.makeText(MainActivity.this, intent.getStringExtra(Constants.MESSAGE_KEY), Toast.LENGTH_LONG).show();
+            AddBook addBook = (AddBook) getSupportFragmentManager().findFragmentByTag(Constants.ADD_BOOK_FRAGMENT_TAG);
+            if (null != addBook) {
+                addBook.displayErrorView(intent);
             }
         }
     }
