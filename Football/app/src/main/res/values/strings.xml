@@ -22,6 +22,15 @@
     <string name="share_text">Share</string>
     <string name="about">About</string>
     <string name="title_activity_about">About</string>
+    <string name="unknown_league_name">Not known league, please report</string>
+
+    <string name="home_crest_logo_description">Home Team Logo</string>
+    <string name="away_crest_logo_description">Away Team Logo</string>
+
+    <string name="failed_loading_teams" translatable="false">Could not load league teams.</string>
+
+    <string name="no_internet_connection" translatable="false">No internet connection, football scores can\'t be loaded.</string>
+
 
     <string name="about_text">
         This Application get Football Matches Score for the Premier League,Seria A,Bundesliga,Primera Division
@@ -31,7 +40,45 @@
     </string>
 
     <string name="widget_text">This is a widget probably.</string>
-    <string name="api_key">[YOUR_API_KEY]</string>
 
+    <string name="api_key">[API-KEY]</string>
+
+    <!-- Dummy Data for Off season -->
     <string name="dummy_data">{\"timeFrameStart\":\"2015-06-18\",\"timeFrameEnd\":\"2015-06-19\",\"count\":1,\"fixtures\":[{\"_links\":{\"self\":{\"href\":\"http://api.football-data.org/alpha/fixtures/140514\"},\"soccerseason\":{\"href\":\"http://api.football-data.org/alpha/soccerseasons/357\"},\"homeTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/275\"},\"awayTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/263\"}},\"date\":\"2015-06-19T22:00:00Z\",\"status\":\"FINISHED\",\"matchday\":42,\"homeTeamName\":\"TESTING1\",\"awayTeamName\":\"TESTING2\",\"result\":{\"goalsHomeTeam\":2,\"goalsAwayTeam\":4}},{\"_links\":{\"self\":{\"href\":\"http://api.football-data.org/alpha/fixtures/140514\"},\"soccerseason\":{\"href\":\"http://api.football-data.org/alpha/soccerseasons/357\"},\"homeTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/275\"},\"awayTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/263\"}},\"date\":\"2015-06-19T22:00:00Z\",\"status\":\"FINISHED\",\"matchday\":42,\"homeTeamName\":\"TESTING1\",\"awayTeamName\":\"TESTING2\",\"result\":{\"goalsHomeTeam\":2,\"goalsAwayTeam\":4}},{\"_links\":{\"self\":{\"href\":\"http://api.football-data.org/alpha/fixtures/140514\"},\"soccerseason\":{\"href\":\"http://api.football-data.org/alpha/soccerseasons/357\"},\"homeTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/275\"},\"awayTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/263\"}},\"date\":\"2015-06-19T22:00:00Z\",\"status\":\"FINISHED\",\"matchday\":42,\"homeTeamName\":\"TESTING1\",\"awayTeamName\":\"TESTING2\",\"result\":{\"goalsHomeTeam\":2,\"goalsAwayTeam\":4}},{\"_links\":{\"self\":{\"href\":\"http://api.football-data.org/alpha/fixtures/140514\"},\"soccerseason\":{\"href\":\"http://api.football-data.org/alpha/soccerseasons/357\"},\"homeTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/275\"},\"awayTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/263\"}},\"date\":\"2015-06-19T22:00:00Z\",\"status\":\"FINISHED\",\"matchday\":42,\"homeTeamName\":\"TESTING1\",\"awayTeamName\":\"TESTING2\",\"result\":{\"goalsHomeTeam\":2,\"goalsAwayTeam\":4}},{\"_links\":{\"self\":{\"href\":\"http://api.football-data.org/alpha/fixtures/140514\"},\"soccerseason\":{\"href\":\"http://api.football-data.org/alpha/soccerseasons/357\"},\"homeTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/275\"},\"awayTeam\":{\"href\":\"http://api.football-data.org/alpha/teams/263\"}},\"date\":\"2015-06-19T22:00:00Z\",\"status\":\"FINISHED\",\"matchday\":42,\"homeTeamName\":\"TESTING1\",\"awayTeamName\":\"TESTING2\",\"result\":{\"goalsHomeTeam\":2,\"goalsAwayTeam\":4}}]}</string>
+
+
+    <string name="api_base_url" translatable="false">http://api.football-data.org/v1</string>
+    <string name="api_fixtures" translatable="false">fixtures</string>
+    <string name="api_seasons" translatable="false">soccerseasons</string>
+    <string name="api_teams" translatable="false">teams</string>
+    <string name="api_param_timeframe" translatable="false">timeFrame</string>
+
+
+    <!-- Leagues names and code -->
+    <string name="league_bundesliga_1_label" translatable="false">1. Bundesliga</string>
+    <integer name="league_bundesliga_1_code" translatable="false">394</integer>
+    <string name="league_bundesliga_2_label" translatable="false">2. Bundesliga</string>
+    <integer name="league_bundesliga_2_code" translatable="false">395</integer>
+    <string name="league_ligue_1_label" translatable="false">Ligue 1</string>
+    <integer name="league_ligue_1_code" translatable="false">396</integer>
+    <string name="league_ligue_2_label" translatable="false">Ligue 2</string>
+    <integer name="league_ligue_2_code" translatable="false">397</integer>
+    <string name="league_premier_league_label" translatable="false">Premier League</string>
+    <integer name="league_premier_league_code" translatable="false">398</integer>
+    <string name="league_primera_division_label" translatable="false">Primera Division</string>
+    <integer name="league_primera_division_code" translatable="false">399</integer>
+    <string name="league_segunda_division_label" translatable="false">Segunda Division</string>
+    <integer name="league_segunda_division_code" translatable="false">400</integer>
+    <string name="league_serie_a_label" translatable="false">Serie A</string>
+    <integer name="league_serie_a_code" translatable="false">401</integer>
+    <string name="league_primeira_liga_label" translatable="false">Primeira Liga</string>
+    <integer name="league_primeira_liga_code" translatable="false">402</integer>
+    <string name="league_bundesliga_3_label" translatable="false">3. Bundesliga</string>
+    <integer name="league_bundesliga_3_code" translatable="false">403</integer>
+    <string name="league_eredivisie_label" translatable="false">Eredivisie</string>
+    <integer name="league_eredivisie_code" translatable="false">404</integer>
+    <string name="league_champions_league_label" translatable="false">Champions League</string>
+    <integer name="league_champions_league_code" translatable="false">405</integer>
+
+
 </resources>
