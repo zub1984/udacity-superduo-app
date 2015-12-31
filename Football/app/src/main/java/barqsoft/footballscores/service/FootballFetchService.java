@@ -120,7 +120,7 @@ public class FootballFetchService extends IntentService {
         try{
             String queryFixturesUrl = Uri.parse(getString(R.string.api_base_url)).buildUpon()
                     .appendPath(getString(R.string.api_fixtures))
-                    .appendQueryParameter(getString(R.string.api_param_timeframe), timeFrame)
+                    .appendQueryParameter(getString(R.string.api_timeFrame), timeFrame)
                     .build().toString();
 
             getMatchFixtures(callApi(queryFixturesUrl));
@@ -220,12 +220,10 @@ public class FootballFetchService extends IntentService {
                     fixturesList.add(fixtureValues);
                 }
             }
-
             // bulk insert the data in database
             if (fixturesList.size() > 0) {
-                int recordInserted= getApplicationContext().getContentResolver().bulkInsert(
+                getApplicationContext().getContentResolver().bulkInsert(
                         DatabaseContract.BASE_CONTENT_URI, fixturesList.toArray(new ContentValues[fixturesList.size()]));
-                Log.v(LOG_TAG,"recordInserted:"+recordInserted);
             }
 
         } catch (JSONException e) {

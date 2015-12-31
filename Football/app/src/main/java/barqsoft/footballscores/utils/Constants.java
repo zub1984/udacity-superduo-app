@@ -1,5 +1,7 @@
 package barqsoft.footballscores.utils;
 
+import barqsoft.footballscores.data.DatabaseContract;
+
 /**
  * Created by laptop on 12/28/2015.
  */
@@ -10,4 +12,12 @@ public class Constants {
     public static final String TEAM_LOGO = "team_logo";
 
     public static final String FETCH_INFO = "football_info";
+
+    // unique key for sending the clicked fixtures date
+    public static String LATEST_FIXTURE_SCORES_DATE = "barqsoft.footballscores.latestfixturewidget.DATE";
+    public static final String ACTION_FOOTBALL_SCORE_UPDATED = DatabaseContract.CONTENT_AUTHORITY + ".ACTION_FOOTBALL_SCORE_UPDATED";
+
+    public static final String ACTION_FOOTBALL_SCORE_UPDATE_RECEIVED = "ACTION_FOOTBALL_SCORE_UPDATE_RECEIVED";
+
+    public static String FOOTBALL_SCORES_HASH_TAG = "#Football_Scores";
 }

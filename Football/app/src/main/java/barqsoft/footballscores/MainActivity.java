@@ -8,6 +8,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import barqsoft.footballscores.utils.FootballUtils;
+
 public class MainActivity extends AppCompatActivity {
     public static int selected_match_id;
     public static int current_fragment = 2;
@@ -54,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+
+        if (id == R.id.action_refresh)
+        {
+            FootballUtils.fetchFootballData(getApplicationContext(),this);
+        }
+
         if (id == R.id.action_about)
         {
             Intent start_about = new Intent(this,AboutActivity.class);

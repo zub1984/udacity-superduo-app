@@ -1,7 +1,11 @@
 package barqsoft.footballscores.utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +13,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.service.FootballFetchService;
 
 /**
  * Created by laptop on 12/29/2015.
@@ -136,5 +141,22 @@ public class FootballUtils {
             }
         }
         return context.getString(R.string.unknown_league_name);
+    }
+
+    /**
+     * method to fetch football details using intent
+     * @param context application context
+     * @param activity from which we called.
+     * @return void
+     */
+    public static void fetchFootballData(@NonNull Context context,@NonNull Activity activity){
+        if(Utility.isNetworkAvailable(context)){
+            Intent intent = new Intent(activity, FootballFetchService.class);
+            intent.setAction(Constants.FETCH_INFO);
+            activity.startService(intent);
+        }
+        else{
+            Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -9,7 +9,19 @@
     <dimen name="Score">24sp</dimen>
     <dimen name="League">15sp</dimen>
 
-
     <dimen name="toolbar_height">48dp</dimen>
+
+    <dimen name="widget_layout_margin">8dp</dimen>
+    <dimen name="widget_padding_top">2dp</dimen>
+    <dimen name="widget_padding_bottom">2dp</dimen>
+    <dimen name="widget_team_name">12sp</dimen>
+
+    <!-- LatestFixture Widget dimensions -->
+    <dimen name="latest_fixture_padding_vertical">2dp</dimen>
+    <dimen name="latest_fixture_default_width">250dp</dimen>
+    <dimen name="latest_fixture_default_height">40dp</dimen>
+    <dimen name="latest_fixture_min_resize_width">180dp</dimen>
+    <dimen name="latest_fixture_min_resize_height">@dimen/latest_fixture_default_height</dimen>
+
 
 </resources>
