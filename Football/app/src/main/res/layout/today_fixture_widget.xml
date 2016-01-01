@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_today_fixtures"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/today_widget_padding_4dp"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <!-- widget Title -->
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary"
+        android:elevation="@dimen/today_widget_padding_4dp"
+        android:gravity="start|center_vertical"
+        android:paddingBottom="6dp"
+        android:paddingEnd="0dp"
+        android:paddingLeft="@dimen/today_widget_padding_4dp"
+        android:paddingRight="0dp"
+        android:paddingTop="6dp"
+        android:text="@string/app_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+        android:textColor="@android:color/white" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Scores listView -->
+        <ListView
+            android:id="@+id/widget_scores_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/grey01"
+            android:dividerHeight="1dp" />
+
+        <TextView
+            android:id="@+id/widget_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-condensed"
+            android:gravity="center"
+            android:text="@string/empty_fixture_list_item"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:textColor="@color/secondary_text" />
+
+    </FrameLayout>
+</LinearLayout>

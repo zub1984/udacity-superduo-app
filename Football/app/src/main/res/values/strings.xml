@@ -41,8 +41,11 @@
     </string>
 
     <string name="widget_text">This is a widget probably.</string>
+    <string name="today_fixture_title">Today Scores</string>
     <string name="latest_fixture_label">Latest Fixture</string>
+    <string name="today_fixture_label">Today\'s Fixtures</string>
     <string name="latest_fixture_image_load_error">Failed to load image from URL.</string>
+    <string name="empty_fixture_list_item">No match scores for today.</string>
 
     <string name="api_key" translatable="false">[API_KEY]</string>
 

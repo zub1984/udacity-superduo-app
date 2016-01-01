@@ -35,6 +35,23 @@
         </receiver>
         <service android:name=".widget.LatestFixtureService" />
 
+        <!-- Today Fixture Widget & Service -->
+        <receiver
+            android:name=".widget.TodayFixtureProvider"
+            android:label="@string/today_fixture_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="barqsoft.footballscores.ACTION_FOOTBALL_SCORE_UPDATED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/today_fixture_info_widget" />
+        </receiver>
+        <service
+            android:name=".widget.TodayFixtureService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
         <provider
             android:name=".data.ScoresProvider"
             android:authorities="barqsoft.footballscores" />

@@ -35,9 +35,10 @@ public class MainActivity extends AppCompatActivity {
             titleView.setText(R.string.app_name);
         }
 
-        //Log.d(LOG_TAG, "Reached MainActivity onCreate");
         if (savedInstanceState == null) {
             my_main = new PagerFragment();
+            // pass the intent received from widget as argument to fragment
+            my_main.setArguments(getIntent().getExtras());
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, my_main)
                     .commit();

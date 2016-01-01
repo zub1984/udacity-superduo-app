@@ -3,16 +3,26 @@ package barqsoft.footballscores.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutionException;
 
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.data.DatabaseContract;
 import barqsoft.footballscores.service.FootballFetchService;
 
 /**
@@ -147,7 +157,6 @@ public class FootballUtils {
      * method to fetch football details using intent
      * @param context application context
      * @param activity from which we called.
-     * @return void
      */
     public static void fetchFootballData(@NonNull Context context,@NonNull Activity activity){
         if(Utility.isNetworkAvailable(context)){
@@ -159,4 +168,82 @@ public class FootballUtils {
             Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
         }
     }
+
+
+    /**
+     * method to set fixture view information
+     * @param context application context
+     * @param views remote view to set the data.
+     * @param cursor having information from database
+     */
+    public static void setFixtureView(Context context, RemoteViews views,Cursor cursor) {
+        setImageViewBitmap(
+                context,
+                views,
+                R.id.home_crest,
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_LOGO_COL)));
+
+        String homeTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_COL));
+        views.setTextViewText(R.id.home_name, homeTeamName);
+        views.setTextColor(R.id.home_name, ContextCompat.getColor(context, R.color.secondary_text));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            Utility.setImageContentDescription(views, R.id.home_crest, homeTeamName);
+        }
+        // score and match time
+        views.setTextViewText(R.id.score_textview, Utility.getScores(
+                cursor.getInt(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_GOALS_COL)),
+                cursor.getInt(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_GOALS_COL))));
+        views.setTextColor(R.id.score_textview, ContextCompat.getColor(context, R.color.secondary_text));
+        views.setTextViewText(R.id.date_textview, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.TIME_COL)));
+        views.setTextColor(R.id.date_textview, ContextCompat.getColor(context, R.color.secondary_text));
+
+        // away team logo and name
+        setImageViewBitmap(
+                context,
+                views,
+                R.id.away_crest,
+                cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_LOGO_COL)));
+
+        String awayTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_COL));
+        views.setTextViewText(R.id.away_name, awayTeamName);
+        views.setTextColor(R.id.away_name, ContextCompat.getColor(context, R.color.secondary_text));
+
+        // set content description on away team logo
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            Utility.setImageContentDescription(views, R.id.away_crest, awayTeamName);
+        }
+
+    }
+
+    /**
+     * Load an image from a url using glide into a bitmap
+     *
+     * @param views    RemoteViews
+     * @param viewId   int
+     * @param imageUrl the URL path of the image to load
+     */
+    private static void setImageViewBitmap(Context context,RemoteViews views, int viewId, String imageUrl) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = Glide.with(context)
+                    .load(imageUrl)
+                    .asBitmap()
+                    .error(R.drawable.football)
+                    .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .get();
+        } catch (InterruptedException | ExecutionException e) {
+            Log.d(FootballUtils.class.getSimpleName(), context.getString(R.string.latest_fixture_image_load_error) + imageUrl);
+        }
+
+        // if bitmap loaded, update image view
+        if (null != bitmap) {
+            // scale the bitmap down because of the binder limit
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                bitmap = Utility.scaleBitmapImage(context, bitmap, 150);
+            }
+            views.setImageViewBitmap(viewId, bitmap);
+        }
+    }
+
+
 }

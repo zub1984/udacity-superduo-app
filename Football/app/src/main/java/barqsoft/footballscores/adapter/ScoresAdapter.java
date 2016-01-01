@@ -127,7 +127,7 @@ public class ScoresAdapter extends CursorAdapter {
         TextView away_name;
         @Bind(R.id.score_textview)
         TextView score;
-        @Bind(R.id.data_textview)
+        @Bind(R.id.date_textview)
         TextView date;
         @Bind(R.id.home_crest)
         ImageView home_crest;

@@ -13,9 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
+import barqsoft.footballscores.utils.Constants;
 import barqsoft.footballscores.utils.FootballUtils;
+import barqsoft.footballscores.utils.Utility;
 
 /**
  * Created by yehya khaled on 2/27/2015.
@@ -24,7 +28,7 @@ public class PagerFragment extends Fragment {
     public static final int NUM_PAGES = 5;
     public ViewPager mPagerHandler;
     private myPageAdapter mPagerAdapter;
-    private MainScreenFragment[] viewFragments = new MainScreenFragment[5];
+    private MainScreenFragment[] viewFragments = new MainScreenFragment[NUM_PAGES];
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,26 +36,41 @@ public class PagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.pager_fragment, container, false);
 
         // load football details from here as this calls MainScreenFragment
-        if(null==savedInstanceState){
-            FootballUtils.fetchFootballData(getContext(),getActivity());
+        if (null == savedInstanceState) {
+            FootballUtils.fetchFootballData(getContext(), getActivity());
         }
 
         mPagerHandler = (ViewPager) rootView.findViewById(R.id.pager);
         mPagerAdapter = new myPageAdapter(getChildFragmentManager());
+        mPagerHandler.setAdapter(mPagerAdapter);
+        mPagerHandler.setCurrentItem(MainActivity.current_fragment);
 
         for (int i = 0; i < NUM_PAGES; i++) {
             Date fragmentDate = new Date(System.currentTimeMillis() + ((i - 2) * 86400000));
             SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+
             viewFragments[i] = new MainScreenFragment();
             viewFragments[i].setFragmentDate(mFormat.format(fragmentDate));
+
+            // pass on received arguments from widgets
+            viewFragments[i].setArguments(getArguments());
+            // if we received a date argument we select the corresponding page
+            Bundle arguments = getArguments();
+            if (arguments != null && arguments.getString(Constants.LATEST_FIXTURE_SCORES_DATE) != null) {
+                if (mFormat.format(fragmentDate).equals(arguments.getString(Constants.LATEST_FIXTURE_SCORES_DATE))) {
+                    mPagerHandler.setCurrentItem(i);
+                }
+            }
         }
 
+        if (Utility.isRtlMode(getContext())) {
+            Collections.reverse(Arrays.asList(viewFragments));
+        }
 
-        mPagerHandler.setAdapter(mPagerAdapter);
-        mPagerHandler.setCurrentItem(MainActivity.current_fragment);
+        Utility.setPagerTabStrip(rootView, getContext());
+
         return rootView;
     }
-
 
 
     private class myPageAdapter extends FragmentStatePagerAdapter {
