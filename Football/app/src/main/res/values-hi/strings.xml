@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- string variables which need to be tranlated for localization -->
+    <string name="app_name">फुटबॉल स्कोर</string>
+    <string name="action_settings">सेटिंग्स</string>
+    <string name="test_text">जाँच</string>
+    <string name="today">आज</string>
+    <string name="yesterday">कल</string>
+    <string name="tomorrow">कल(आनेवाला)</string>
+    <string name="champions_league">यूफ़ा चैम्पियन्स लीग</string>
+    <string name="bundesliga">बुंडेसलीगा</string>
+    <string name="premierleague">प्रीमियर लीग</string>
+    <string name="primeradivison">प्राइमेरा डिवीजन</string>
+    <string name="seriaa">सेरी एक</string>
+    <string name="matchday_text">मुकाबले का दिन</string>
+    <string name="group_stage_text">ग्रुप चरण</string>
+    <string name="first_knockout_round">पहले पीटा दौर</string>
+    <string name="quarter_final">क्वार्टर फाइनल</string>
+    <string name="semi_final">सेमीफाइनल</string>
+    <string name="final_text">निर्णायक</string>
+    <string name="share_text">शेयर</string>
+    <string name="action_refresh">ताज़ा करना</string>
+    <string name="action_about">बारे में</string>
+    <string name="title_activity_about">बारे में</string>
+    <string name="unknown_league_name">ज्ञात नहीं लीग रिपोर्ट करें</string>
+    <string name="home_crest_logo_description">घरेलू टीम लोगो</string>
+    <string name="away_crest_logo_description">दूर टीम लोगो</string>
+    <string name="no_team_found">टीम पाया नहीं जा सकता</string>
+    <string name="failed_loading_teams">लीग टीमों लोड नहीं कर सका</string>
+    <string name="no_internet_connection">इंटरनेट कनेक्शन नहीं हैं, फुटबॉल स्कोर लोड नहीं किया जा सकता है</string>
+
+    <string name="about_text">
+        इस आवेदन प्रीमियर लीग फुटबॉल, Seria ए, Bundesliga, Primera डिवीजन के लिए स्कोर मैचों मिल
+         और यूईएफए चैम्पियंस लीग। \n डेटा football-data.org मुक्त एपीआई से अर्जित कर रहे हैं सभी मैचों।
+         \n इस एप्लिकेशन के मूल संस्करण याहिया खालिद इब्न अल वालिद अहमद द्वारा बनाया गया था, और एक संशोधित संस्करण Udacity एंड्रॉयड Nanodegree कार्यक्रम में छात्रों को दिया जाता है।
+         \n बंद के मौसम के दौरान, नकली डेटा जोड़ दिया जाएगा।
+    </string>
+
+    <string name="today_fixture_title">आज के स्कोर</string>
+    <string name="latest_fixture_label">नवीनतम स्कोर</string>
+    <string name="today_fixture_label">आज के स्कोर</string>
+    <string name="latest_fixture_image_load_error">URL से छवि को लोड करने में असफल</string>
+    <string name="empty_fixture_list_item">आज के लिए कोई मैच के स्कोर</string>
+
+</resources>

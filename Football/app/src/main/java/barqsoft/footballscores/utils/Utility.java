@@ -135,6 +135,7 @@ public class Utility {
         } else {
             // else get language codes
             Set<String> lang = new HashSet<String>();
+            lang.add("hi");
             lang.add("ar");
             lang.add("dv");
             lang.add("fa");
