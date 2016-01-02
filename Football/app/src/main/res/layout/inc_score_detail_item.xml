@@ -10,28 +10,20 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_gravity="center_horizontal"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/home_crest"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/football"
+            style="@style/team_crest_style"
             android:contentDescription="@string/home_crest_logo_description" />
 
         <TextView
             android:id="@+id/home_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:maxLines="2"
-            android:text="@string/test_text"
-            android:textSize="@dimen/TeamNames"
-            android:textStyle="bold" />
+            style="@style/team_name_text_style"
+            android:text="@string/test_text" />
 
     </LinearLayout>
     <!-- End: Home Team Details-->
@@ -75,21 +67,14 @@
         <ImageView
             android:id="@+id/away_crest"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/football"
+            style="@style/team_crest_style"
             android:contentDescription="@string/away_crest_logo_description"/>
 
         <TextView
             android:id="@+id/away_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:maxLines="2"
-            android:textSize="@dimen/TeamNames"
-            android:textStyle="bold"
+            style="@style/team_name_text_style"
             android:text="@string/test_text"/>
 
     </LinearLayout>

@@ -2,27 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_marginTop="@dimen/toolbar_height"
+    android:orientation="vertical"
     android:padding="5dp"
     tools:context="barqsoft.footballscores.AboutActivity$PlaceholderFragment">
 
     <TextView
+        style="@style/about_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:gravity="start"
-        android:text="@string/app_name"
-        android:textSize="@dimen/Score" />
-
+        android:text="@string/app_name" />
 
     <TextView
+        style="@style/about_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
         android:text="@string/about_text"
-        android:textDirection="anyRtl"
-        android:textSize="@dimen/TeamNames" />
-
-
+        android:textDirection="anyRtl" />
 </LinearLayout>

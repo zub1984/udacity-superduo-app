@@ -104,7 +104,8 @@ public class FootballFetchService extends IntentService {
                     mTeamsList.add(teamValues);
                 }
             } else {
-                Log.e(LOG_TAG, "No teams found");
+                // To log the message
+                //Log.e(LOG_TAG,getString(R.string.no_team_found));
             }
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
