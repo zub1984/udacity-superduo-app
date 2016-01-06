@@ -12,8 +12,7 @@
     </style>
 
     <!-- Settings activity theme. -->
-    <style name="SettingsTheme" parent="AppTheme">
-    </style>
+    <style name="SettingsTheme" parent="AppTheme"></style>
 
     <!-- Toolbar theme -->
     <style name="Toolbar" parent="Widget.AppCompat.Toolbar">
@@ -50,7 +49,7 @@
     </style>
 
 
-    <style name="bookTitle" parent="TextAppearance.AppCompat.Title">
+    <style name="bookTitle" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textColor">@color/colorSecondaryText</item>
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -86,7 +85,7 @@
     </style>
 
     <style name="errorMessage" parent="TextAppearance.AppCompat.Medium">
-        <item name="android:textColor">@color/colorPrimaryDark</item></resources>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">@dimen/text_margin_top_20dp</item>
     </style>
@@ -98,6 +97,8 @@
         <item name="android:singleLine">true</item>
         <item name="android:layout_margin">@dimen/text_book_detail_margin_5dp</item>
     </style>
+
+</resources>
 
 
 
