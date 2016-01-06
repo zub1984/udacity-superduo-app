@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Alexandria Project of Udacity Nano degree course.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.-->
+
+<resources>
+    <string name="app_name">सिकंदरिया</string>
+
+    <!-- Menu Items -->
+    <string name="books">पुस्तक सूची</string>
+    <string name="scan">पुस्तक जोड़ें</string>
+    <string name="about">बारे में</string>
+    <string name="details">पुस्तक विवरण</string>
+    <string name="settings">सेटिंग्स</string>
+
+    <string name="navigation_drawer_open" >ओपन नेविगेशन दराज</string>
+    <string name="navigation_drawer_close">बंद नेविगेशन दराज</string>
+    <string name="action_settings">सेटिंग्स</string>
+    <string name="scan_button">स्कैन पुस्तक बारकोड</string>
+    <string name="input_isbn_hint">13 अंकों ISBN संख्या दर्ज</string>
+    <string name="book_cover">पुस्तक आवरण</string>
+
+    <string name="ok_button">अगला</string>
+    <string name="cancel_button">निरस्त करना</string>
+    <string name="not_found">पुस्तक नहीं पाया गया </string>
+    <string name="search">खोज</string>
+    <string name="delete">पुस्तक मिटायें</string>
+    <string name="pref_startScreen">चुनें प्रारंभ स्क्रीन</string>
+
+    <string name="title_activity_settings">सेटिंग्स</string>
+
+    <string name="action_share">शेयर</string>
+    <string name="back_button">लौटना</string>
+    <string name="share_text">एक किताब पढ़ी चाहिए: </string>
+
+    <string name="about_text">इस आवेदन एक गूगल एपीआई से पुस्तक जानकारी हो जाता है। सभी खिताब, छवियों को कवर, और लेखक के बारे में जानकारी वहाँ से आते हैं।
+     इस एप्लिकेशन के मूल संस्करण साशा Jaschke द्वारा बनाया गया था, और एक संशोधित संस्करण Udacity नैनो डिग्री परियोजना के हिस्से के रूप जुबैर द्वारा विकसित की है।</string>
+
+
+    <!-- Book details placeholder -->
+    <string name="book_title">कृत्रिम होशियारी</string>
+    <string name="book_subtitle">एक आधुनिक दृष्टिकोण</string>
+    <string name="book_desc">बुद्धिमान एजेंटों, समस्या सुलझाने, तार्किक एजेंटों, योजना, अनिश्चितता, शिक्षा, और रोबोटिक्स के रूप में इस तरह के विषयों को कवर, कृत्रिम बुद्धि के लिए एक गाइड प्रस्तुत करता है।</string>
+    <string name="book_author">स्टुअर्ट जोनाथन रसेल</string>
+    <string name="book_category">कंप्यूटर्स</string>
+
+    <string name="search_button">पुस्तक खोज</string>
+    <string name="save_button">चुनना</string>
+    <string name="search_hint">पुस्तक खोज</string>
+
+    <string name="scan_bar_code">बारकोड को स्कैन</string>
+    <string name="scan_failed_or_cancel">स्कैनिंग विफल रहा है या रद्द</string>
+
+    <string name="no_internet_connection">कोई इंटरनेट कनेक्शन नहीं</string>
+    <string name="io_error_or_timeout">त्रुटि या मध्यांतर</string>
+    <string name="bad_response">सर्वर से बुरी प्रतिक्रिया</string>
+
+</resources>
