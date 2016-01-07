@@ -92,7 +92,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     @Bind(R.id.imageErrorHandler)
     ImageView imageErrorHandler;
 
-   /* @Bind(R.id.inc_no_book_found)
+  /* *//* @Bind(R.id.inc_no_book_found)
     View inc_no_book_found;
 */
     @Bind(R.id.inc_book_preview)
@@ -114,6 +114,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ButterKnife.bind(this, rootView);
+        clearViews();
 
         if (savedInstanceState != null && ean != null) {
             ean.setText(savedInstanceState.getString(Constants.EAN_CONTENT));
@@ -127,7 +128,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         cancel_button.setOnClickListener(this);
 
         getActivity().setTitle(R.string.scan);
-        clearViews();
+
         return rootView;
     }
 
@@ -313,6 +314,7 @@ public class AddBook extends Fragment implements View.OnClickListener, LoaderMan
         View view = getView();
         if (null != view) {
             inc_book_preview.setVisibility(View.VISIBLE);
+            inc_no_connection.setVisibility(View.GONE);
             bookTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE)));
             bookSubTitle.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE)));
 

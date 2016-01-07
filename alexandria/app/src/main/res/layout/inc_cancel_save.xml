@@ -33,6 +33,7 @@
         android:drawableStart="@drawable/ic_action_cancel"
         android:gravity="start|center_vertical"
         android:text="@string/cancel_button"
+        android:contentDescription="@string/cancel_button"
         android:textSize="18sp" />
 
     <Button
@@ -48,6 +49,7 @@
         android:drawableRight="@drawable/ic_action_accept"
         android:gravity="end|center_vertical"
         android:text="@string/ok_button"
+        android:contentDescription="@string/ok_button"
         android:textSize="18sp" />
 
 </LinearLayout>

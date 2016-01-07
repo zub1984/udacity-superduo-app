@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,8 +62,10 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     TextView fullBookCategories;
     @Bind(R.id.authors)
     TextView fullBokAuthors;
-    @Bind(R.id.backButton)
-    ImageButton backButton;
+
+   /* @Bind(R.id.backButton)
+    ImageButton backButton;*/
+
     @Bind(R.id.delete_button)
     Button delete_button;
 
@@ -179,9 +180,9 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         fullBookCategories.setText(categories);
 
-        if (rootView.findViewById(R.id.right_container) != null) {
+       /* if (rootView.findViewById(R.id.right_container) != null) {
             backButton.setVisibility(View.INVISIBLE);
-        }
+        }*/
     }
 
 
