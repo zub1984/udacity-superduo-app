@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.MenuItemCompat;
@@ -62,12 +63,17 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     TextView fullBookCategories;
     @Bind(R.id.authors)
     TextView fullBokAuthors;
-
-   /* @Bind(R.id.backButton)
-    ImageButton backButton;*/
-
     @Bind(R.id.delete_button)
     Button delete_button;
+
+
+    /**
+     * Callback interface to be used in the mainActivity, for restoring the drawer icon
+     */
+    public interface Callback {
+        void toggleToolbarDrawerIcon(boolean backToHome);
+        void onNavigationDrawerItemSelected(int position);
+    }
 
     public BookDetail() {
     }
@@ -110,9 +116,22 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
                 bookIntent.putExtra(Constants.EAN, ean);
                 bookIntent.setAction(Constants.DELETE_BOOK);
                 getActivity().startService(bookIntent);
-                getActivity().getSupportFragmentManager().popBackStack();
+
+                ((Callback) getActivity()).toggleToolbarDrawerIcon(false);
+                // Reload the bookList fragment if we are on a tablet (landscape mode)
+                if (MainActivity.IS_TABLET && null != getActivity().findViewById(R.id.right_container)) {
+                    ((Callback) getActivity()).onNavigationDrawerItemSelected(Constants.DRAWER_BOOK_LIST_POSITION);
+                } else {
+                    // else close current detail fragment
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
+
+        // set the drawer button to home/back icon on device rotation
+        if (savedInstanceState != null) {
+            ((Callback) getActivity()).toggleToolbarDrawerIcon(true);
+        }
 
         getActivity().setTitle(R.string.details);
 
@@ -160,7 +179,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         fullBookDesc.setText(data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.DESC)));
 
         String authorsName = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        if(null!=authorsName){
+        if (null != authorsName) {
             String[] authorsArr = authorsName.split(",");
             fullBokAuthors.setLines(authorsArr.length);
             fullBokAuthors.setText(authorsName.replace(",", "\n"));
@@ -179,10 +198,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         String categories = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY));
         fullBookCategories.setText(categories);
-
-       /* if (rootView.findViewById(R.id.right_container) != null) {
-            backButton.setVisibility(View.INVISIBLE);
-        }*/
     }
 
 
@@ -202,11 +217,16 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     }
 
+    /**
+     * Just before rotating from portrait to landscape mode close the detail fragment,
+     * or possibly there will be 2 detail fragments
+     */
+
     @Override
     public void onPause() {
-        super.onDestroyView();
+        super.onPause();
         if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
-            getActivity().getSupportFragmentManager().popBackStack();
+            getActivity().getSupportFragmentManager().popBackStack(getString(R.string.details), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

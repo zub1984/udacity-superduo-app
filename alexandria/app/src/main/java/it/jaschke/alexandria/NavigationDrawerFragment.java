@@ -128,6 +128,10 @@ public class NavigationDrawerFragment extends Fragment {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
+    public void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+    }
+
     /**
      * Users of this fragment must call this method to set up the navigation drawer interactions.
      *
@@ -206,9 +210,8 @@ public class NavigationDrawerFragment extends Fragment {
         if (mDrawerLayout != null) {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
+        // select fragment in the main activity using callback interface
+        ((NavigationDrawerCallbacks) getActivity()).onNavigationDrawerItemSelected(position);
     }
 
     @Override
@@ -279,5 +282,17 @@ public class NavigationDrawerFragment extends Fragment {
      */
     public interface NavigationDrawerCallbacks {
         void onNavigationDrawerItemSelected(int position);
+    }
+
+    /**
+     * Toggle the toolbar drawer icon between the hamburger and back icon
+     * @param backToHome boolean
+     */
+    public void toggleToolbarDrawerIcon(boolean backToHome) {
+        if (backToHome) {
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+        } else {
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+        }
     }
 }

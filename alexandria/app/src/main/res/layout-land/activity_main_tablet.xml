@@ -13,50 +13,57 @@
     See the License for the specific language governing permissions and
     limitations under the License.-->
 
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <!-- Toolbar -->
     <include layout="@layout/toolbar" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <!-- Start placeholder -->
+            <FrameLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/margin_24dp" />
+
+            <!-- End placeholder for the detail fragments -->
+            <FrameLayout
+                android:id="@+id/right_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/margin_24dp"
+                android:paddingEnd="@dimen/margin_24dp"
+                android:paddingLeft="0dp"
+                android:paddingRight="@dimen/margin_24dp"
+                android:paddingStart="0dp" />
+
+        </LinearLayout>
+
+        <!-- Drawer -->
+        <fragment
+            android:id="@+id/navigation_drawer"
+            android:name="it.jaschke.alexandria.NavigationDrawerFragment"
+            android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_gravity="start"
+            tools:layout="@layout/fragment_navigation_drawer" />
 
-        <FrameLayout
-            android:id="@+id/right_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"></FrameLayout>
-
-    </LinearLayout>
-
-
-    <!-- android:layout_gravity="start" tells DrawerLayout to treat
-         this as a sliding drawer on the left side for left-to-right
-         languages and on the right side for right-to-left languages.
-         If you're not building against API 17 or higher, use
-         android:layout_gravity="left" instead. -->
-    <!-- The drawer is given a fixed width in dp and extends the full height of
-         the container. -->
-    <fragment
-        android:id="@+id/navigation_drawer"
-        android:name="it.jaschke.alexandria.NavigationDrawerFragment"
-        android:layout_width="@dimen/navigation_drawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        tools:layout="@layout/fragment_navigation_drawer" />
-
-</android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>
+</android.support.design.widget.CoordinatorLayout>

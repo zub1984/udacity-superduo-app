@@ -14,11 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
-import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.utils.Constants;
+import it.jaschke.alexandria.utils.EventUtils;
 
 /*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Alexandria Project of Udacity Nano degree course.
 
@@ -33,7 +32,7 @@ import it.jaschke.alexandria.utils.Constants;
         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
         See the License for the specific language governing permissions and
         limitations under the License.*/
-public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, ListOfBooks.Callback, BookDetail.Callback {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     public static boolean IS_TABLET = false;
     private BroadcastReceiver messageReceiver;
     private TextView mToolbarTitle;
+
+    private String mBookEan;
+    private String mBookTitle;
 
 
     @Override
@@ -64,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
         mToolbarTitle = (TextView) findViewById(R.id.toolbar_title);
 
-
         messageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(Constants.MESSAGE_EVENT);
         LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver, filter);
@@ -77,17 +78,13 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         // set the toolbar title to the name of the app
         mToolbarTitle.setText(R.string.app_name);
 
-
         // Set up the drawer.
-        navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                (DrawerLayout) findViewById(R.id.drawer_layout));
-
+        navigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
+        EventUtils.hideKeyboard(this);
 
         // get the saved state vars
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("title_name")) {
-                title = savedInstanceState.getString("title_name", null);
-            }
+            getSavedStateInfo(savedInstanceState);
         }
     }
 
@@ -100,7 +97,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("title_name", title.toString());
+        outState.putString(Constants.TITLE_KEY, title.toString());
+        outState.putString(Constants.EAN_KEY, mBookEan);
+        outState.putString(Constants.BOOK_TITLE_KEY, mBookTitle);
     }
 
 
@@ -112,15 +111,14 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
         switch (position) {
             default:
-            case 0:
+            case Constants.DRAWER_BOOK_LIST_POSITION:
                 nextFragment = new ListOfBooks();
                 break;
-            case 1:
+            case Constants.DRAWER_ADD_BOOK_POSITION:
                 nextFragment = new AddBook();
                 tagName = Constants.ADD_BOOK_FRAGMENT_TAG;
-
                 break;
-            case 2:
+            case Constants.DRAWER_ABOUT_POSITION:
                 nextFragment = new About();
                 break;
 
@@ -134,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     public void setTitle(int titleId) {
         title = getString(titleId);
-        // update the toolbar title textview
+        // update the toolbar title textView
         mToolbarTitle.setText(title);
     }
 
@@ -156,14 +154,22 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
+        }
+        else if (id == android.R.id.home) {
+            EventUtils.hideKeyboard(this);
+            // if we are not on a tablet in landscape mode
+            if (findViewById(R.id.right_container) == null) {
+                // if we are coming back from the bookDetail fragment, reset the hamburger
+                if (title.equals(getString(R.string.details))) {
+                    getSupportFragmentManager().popBackStack();
+                    toggleToolbarDrawerIcon(false);
+                    return true;
+                }
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -176,9 +182,13 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     }
 
     @Override
-    public void onItemSelected(String ean) {
+    public void onItemSelected(String ean, String title) {
+        mBookEan = ean;
+        mBookTitle = title;
+
         Bundle args = new Bundle();
         args.putString(Constants.EAN_KEY, ean);
+        args.putString(Constants.TITLE_KEY, title);
 
         BookDetail fragment = new BookDetail();
         fragment.setArguments(args);
@@ -191,7 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                 .replace(id, fragment)
                 .addToBackStack(Constants.BOOK_DETAIL_FRAGMENT_TAG)  //"Book Detail"
                 .commit();
-
+        //toggle the toolbar icon to back
+        toggleToolbarDrawerIcon(true);
+        EventUtils.hideKeyboard(this);
     }
 
     private class MessageReceiver extends BroadcastReceiver {
@@ -204,10 +216,6 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         }
     }
 
-    public void goBack(View view) {
-        getSupportFragmentManager().popBackStack();
-    }
-
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
@@ -216,10 +224,51 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
+        // close the drawer if it's open
+        if (navigationDrawerFragment.isDrawerOpen()) {
+            navigationDrawerFragment.closeDrawer();
+            return;
+        }
+        // if we are coming back from the book detail fragment, reset the hamburger icon
+        if (title.equals(getString(R.string.details))) {
+            toggleToolbarDrawerIcon(false);
+        }
+
         if (getSupportFragmentManager().getBackStackEntryCount() < 2) {
             finish();
         }
         super.onBackPressed();
+    }
+
+
+    /**
+     * Toggle the toolbar drawer icon between the hamburger and back icon
+     *
+     * @param backToHome boolean
+     */
+    public void toggleToolbarDrawerIcon(boolean backToHome) {
+        // if we are not on a tablet landscape mode
+        if (findViewById(R.id.right_container) == null) {
+            navigationDrawerFragment.toggleToolbarDrawerIcon(backToHome);
+        }
+    }
+
+    private void getSavedStateInfo(Bundle savedInstanceState) {
+        if (savedInstanceState.containsKey(Constants.TITLE_KEY))
+            title = savedInstanceState.getString(Constants.TITLE_KEY, null);
+
+        if (savedInstanceState.containsKey(Constants.EAN_KEY))
+            mBookEan = savedInstanceState.getString(Constants.EAN_KEY, null);
+
+        if (savedInstanceState.containsKey(Constants.BOOK_TITLE_KEY))
+            mBookTitle = savedInstanceState.getString(Constants.BOOK_TITLE_KEY, null);
+
+        // when rotating to landscape bookList on a tablet select the previously selected book
+        if (IS_TABLET && findViewById(R.id.right_container) != null && title.equals(getString(R.string.books)) && mBookEan != null && mBookTitle != null) {
+            onItemSelected(mBookEan, mBookTitle);
+            mBookEan = null;
+            mBookTitle = null;
+        }
     }
 
 }

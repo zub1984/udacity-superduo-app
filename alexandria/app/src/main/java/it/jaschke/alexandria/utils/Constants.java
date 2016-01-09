@@ -24,7 +24,11 @@ public class Constants {
     public final static int ISBN_LENGTH_13=13;
 
     public static final String EAN_CONTENT = "eanContent";
-    public static final String EAN_KEY = "EAN";
+    public static final String EAN_KEY = "ean";
+    public static final String TITLE_KEY = "title";
+    public static final String BOOK_TITLE_KEY = "bookTitle";
+
+    public static final String LIST_POSITION_KEY = "listPosition";
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "BOOK_NOT_FOUND";
@@ -35,7 +39,13 @@ public class Constants {
     public static final String BOOK_DETAIL_FRAGMENT_TAG = "bookDetail";
 
     public static final int ADD_BOOK_LOADER_ID = 1;
+    public static final int BOOK_LIST_LOADER_ID = 1;
 
     public static final int CONNECTION_AND_READ_TIME_OUT = 5;
+
+    public static final int DRAWER_BOOK_LIST_POSITION = 0;
+    public static final int DRAWER_ADD_BOOK_POSITION = 1;
+    public static final int DRAWER_ABOUT_POSITION = 2;
+
 
 }
