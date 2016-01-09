@@ -104,6 +104,7 @@ public class Utility {
 
     /**
      * function to get today locale date.
+     *
      * @return string of formatted date.
      */
     public static String getTodayLocaleDate() {
@@ -130,6 +131,7 @@ public class Utility {
 
     /**
      * Check if we are on a device in RTL mode
+     * http://stackoverflow.com/questions/14402329/disable-actionbar-rtl-direction
      *
      * @return boolean
      */
@@ -145,7 +147,6 @@ public class Utility {
         } else {
             // else get language codes
             Set<String> lang = new HashSet<String>();
-            lang.add("hi");
             lang.add("ar");
             lang.add("dv");
             lang.add("fa");

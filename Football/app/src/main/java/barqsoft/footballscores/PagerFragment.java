@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
 
 import barqsoft.footballscores.utils.Constants;
 import barqsoft.footballscores.utils.FootballUtils;
@@ -58,7 +59,7 @@ public class PagerFragment extends Fragment {
 
         for (int i = 0; i < NUM_PAGES; i++) {
             Date fragmentDate = new Date(System.currentTimeMillis() + ((i - 2) * 86400000));
-            SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd",Locale.US);
 
             viewFragments[i] = new MainScreenFragment();
             viewFragments[i].setFragmentDate(mFormat.format(fragmentDate));
@@ -102,13 +103,15 @@ public class PagerFragment extends Fragment {
         // Returns the page title for the top indicator
         @Override
         public CharSequence getPageTitle(int position) {
-            return getDayName(getContext(), System.currentTimeMillis() + ((position - 2) * 86400000));
+            // get -X days in milliseconds for RTL mode
+            if (Utility.isRtlMode(getContext()))
+                return getDayName(getContext(), System.currentTimeMillis() - ((position - 2) * 86400000));
+            else
+                return getDayName(getContext(), System.currentTimeMillis() + ((position - 2) * 86400000));
         }
 
         public String getDayName(Context context, long dateInMillis) {
-            // If the date is today, return the localized version of "Today" instead of the actual
-            // day name.
-
+            // If the date is today, return the localized version of "Today" instead of the actual day name.
             Time t = new Time();
             t.setToNow();
             int julianDay = Time.getJulianDay(dateInMillis, t.gmtoff);
@@ -123,7 +126,7 @@ public class PagerFragment extends Fragment {
                 Time time = new Time();
                 time.setToNow();
                 // Otherwise, the format is just the day of the week (e.g "Wednesday".
-                SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+                SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
                 return dayFormat.format(dateInMillis);
             }
         }
