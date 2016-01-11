@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -12,14 +11,12 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
+import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.data.DatabaseContract;
@@ -42,7 +39,8 @@ public class FootballUtils {
 
     /**
      * function to get league id from soccer season href link
-     * @param context of the application
+     *
+     * @param context          of the application
      * @param soccerSeasonHref soccer season href link from football.org
      * @return int league id
      */
@@ -54,7 +52,8 @@ public class FootballUtils {
 
     /**
      * function to get league id from self href link
-     * @param context of the application
+     *
+     * @param context  of the application
      * @param selfHref self href link from football.org
      * @return int match id
      */
@@ -66,7 +65,8 @@ public class FootballUtils {
 
     /**
      * function to get homeTeam or awayTeam id from Team href link
-     * @param context of the application
+     *
+     * @param context  of the application
      * @param teamHref homeTeam or awayTeam href link from football.org
      * @return int Team id
      */
@@ -78,6 +78,7 @@ public class FootballUtils {
 
     /**
      * function to get homeTeam or awayTeam id from Team href link
+     *
      * @param crestUrl crestUrl of team
      * @return String modified logo url path for .png image
      */
@@ -100,8 +101,9 @@ public class FootballUtils {
 
     /**
      * function to check if an int exists in int array
+     *
      * @param array int[]
-     * @param key int
+     * @param key   int
      * @return boolean
      */
     public static boolean isLeagueIdAvailable(final int[] array, final int key) {
@@ -114,11 +116,12 @@ public class FootballUtils {
 
     /**
      * function to format and return date and time
+     *
      * @param matchDate match date and time from server
-     * @param isReal real data flag
+     * @param isReal    real data flag
      * @return String formatted date and time separated by ","
      */
-    public static String getMatchDateTime(String matchDate,boolean isReal, int counter){
+    public static String getMatchDateTime(String matchDate, boolean isReal, int counter) {
 
         String date = matchDate.substring(0, matchDate.indexOf("T"));
         String time = matchDate.substring(matchDate.indexOf("T") + 1, matchDate.indexOf("Z"));
@@ -129,7 +132,7 @@ public class FootballUtils {
         try {
             SimpleDateFormat newDate = new SimpleDateFormat("yyyy-MM-dd:HH:mm", Locale.US);
             newDate.setTimeZone(TimeZone.getDefault());
-            date = newDate.format(simpleDateFormat.parse(date+time));
+            date = newDate.format(simpleDateFormat.parse(date + time));
             time = date.substring(date.indexOf(":") + 1);
             date = date.substring(0, date.indexOf(":"));
             // change dummy data's date to match current date range
@@ -141,21 +144,22 @@ public class FootballUtils {
         } catch (Exception e) {
             Log.e(FootballUtils.class.getSimpleName(), e.getMessage());
         }
-        return date+","+time;
+        return date + "," + time;
     }
 
 
     /**
      * Get league name from league code
+     *
      * @param leagueId int
-     * @param context Context
+     * @param context  Context
      * @return String
      */
     public static String getLeagueName(Context context, int leagueId) {
         int[] leagueCodes = context.getResources().getIntArray(R.array.league_codes);
         String[] leagueLabels = context.getResources().getStringArray(R.array.league_labels);
         // find position of the league code, we get the league label at same index
-        for(int i=0; i < leagueCodes.length; i++) {
+        for (int i = 0; i < leagueCodes.length; i++) {
             if (leagueCodes[i] == leagueId) {
                 return leagueLabels[i];
             }
@@ -165,33 +169,42 @@ public class FootballUtils {
 
     /**
      * method to fetch football details using intent
-     * @param context application context
+     *
+     * @param context  application context
      * @param activity from which we called.
      */
-    public static void fetchFootballData(@NonNull Context context,@NonNull Activity activity){
-        if(Utility.isNetworkAvailable(context)){
+    public static void fetchFootballData(@NonNull Context context, @NonNull Activity activity) {
+        if (Utility.isNetworkAvailable(context)) {
             Intent intent = new Intent(activity, FootballFetchService.class);
             intent.setAction(Constants.FETCH_INFO);
             activity.startService(intent);
-        }
-        else{
+        } else {
             Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Asynchronously fulfills the request into the specified {@link RemoteViews} object with the
+     * given {@code viewId}. This is used for loading bitmaps into all instances of a widget.
+     */
+    private static void setPicasso(@NonNull Context context, RemoteViews views, int viewId,@NonNull String imageUrl, int[] appWidgetIds) {
+        Picasso.with(context)
+                .load(imageUrl)
+                .into(views, viewId, appWidgetIds);
     }
 
 
     /**
      * method to set fixture view information
+     *
      * @param context application context
-     * @param views remote view to set the data.
-     * @param cursor having information from database
+     * @param views   remote view to set the data.
+     * @param cursor  having information from database
+     * @param appWidgetIds to display in remoteView
      */
-    public static void setFixtureView(Context context, RemoteViews views,Cursor cursor) {
-        setImageViewBitmap(
-                context,
-                views,
-                R.id.home_crest,
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_LOGO_COL)));
+    public static void setFixtureView(Context context, RemoteViews views, Cursor cursor, int[] appWidgetIds) {
+
+        setPicasso(context, views, R.id.home_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_LOGO_COL)), appWidgetIds);
 
         String homeTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_COL));
         views.setTextViewText(R.id.home_name, homeTeamName);
@@ -208,11 +221,7 @@ public class FootballUtils {
         views.setTextColor(R.id.date_textview, ContextCompat.getColor(context, R.color.secondary_text));
 
         // away team logo and name
-        setImageViewBitmap(
-                context,
-                views,
-                R.id.away_crest,
-                cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_LOGO_COL)));
+        setPicasso(context, views, R.id.away_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_LOGO_COL)), appWidgetIds);
 
         String awayTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_COL));
         views.setTextViewText(R.id.away_name, awayTeamName);
@@ -222,38 +231,6 @@ public class FootballUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
             Utility.setImageContentDescription(views, R.id.away_crest, awayTeamName);
         }
-
     }
-
-    /**
-     * Load an image from a url using glide into a bitmap
-     *
-     * @param views    RemoteViews
-     * @param viewId   int
-     * @param imageUrl the URL path of the image to load
-     */
-    private static void setImageViewBitmap(Context context,RemoteViews views, int viewId, String imageUrl) {
-        Bitmap bitmap = null;
-        try {
-            bitmap = Glide.with(context)
-                    .load(imageUrl)
-                    .asBitmap()
-                    .error(R.drawable.football)
-                    .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .get();
-        } catch (InterruptedException | ExecutionException e) {
-            Log.d(FootballUtils.class.getSimpleName(), context.getString(R.string.latest_fixture_image_load_error) + imageUrl);
-        }
-
-        // if bitmap loaded, update image view
-        if (null != bitmap) {
-            // scale the bitmap down because of the binder limit
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                bitmap = Utility.scaleBitmapImage(context, bitmap, 150);
-            }
-            views.setImageViewBitmap(viewId, bitmap);
-        }
-    }
-
 
 }

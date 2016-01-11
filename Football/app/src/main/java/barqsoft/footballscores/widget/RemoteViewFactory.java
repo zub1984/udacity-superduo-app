@@ -1,5 +1,7 @@
 package barqsoft.footballscores.widget;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -52,8 +54,12 @@ public class RemoteViewFactory implements RemoteViewsService.RemoteViewsFactory 
             return null;
         }
 
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, getClass()));
+
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.today_fixture_list_item);
-        FootballUtils.setFixtureView(mContext, views, data);
+        FootballUtils.setFixtureView(mContext, views, data, appWidgetIds);
+
         final Intent intentMessage = new Intent();
         final Bundle extras = new Bundle();
         extras.putString(Constants.LATEST_FIXTURE_SCORES_DATE, data.getString(data.getColumnIndex(scores_table.DATE_COL)));

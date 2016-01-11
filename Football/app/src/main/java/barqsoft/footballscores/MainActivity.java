@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import barqsoft.footballscores.utils.FootballUtils;
 
-/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nanodegree course.
+/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nano degree course.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import barqsoft.footballscores.utils.FootballUtils;
 public class MainActivity extends AppCompatActivity {
     public static int selected_match_id;
     public static int current_fragment = 2;
-    public static String LOG_TAG = "MainActivity";
-    private final String save_tag = "Save Test";
     private PagerFragment my_main;
 
 
@@ -37,17 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // set a toolbar as support actionbar, with default title home button disabled
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-            // get the toolbar title view and set the title
-            TextView titleView = (TextView) findViewById(R.id.toolbar_title);
-            titleView.setText(R.string.app_name);
-        }
+        setToolBar();
 
         if (savedInstanceState == null) {
             my_main = new PagerFragment();
@@ -56,6 +44,19 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, my_main)
                     .commit();
+        }
+    }
+
+    private void setToolBar(){
+        // set a toolbar as support actionbar, with default title home button disabled
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            // get the toolbar title view and set the title
+            TextView titleView = (TextView) findViewById(R.id.toolbar_title);
+            titleView.setText(R.string.app_name);
         }
     }
 

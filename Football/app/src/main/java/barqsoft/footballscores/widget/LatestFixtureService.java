@@ -3,12 +3,12 @@ package barqsoft.footballscores.widget;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
@@ -42,47 +42,49 @@ public class LatestFixtureService extends IntentService {
 
     @Override
     protected void onHandleIntent(@NonNull Intent intent) {
-        if (Constants.ACTION_FOOTBALL_SCORE_UPDATE_RECEIVED.equals(intent.getAction())) {
-            // get most recent fixture
-            Uri uri = scores_table.buildMostRecentScore();
-            Cursor cursor = getContentResolver().query(
-                    uri,
-                    null,
-                    null,
-                    new String[]{Utility.getTodayLocaleDate()},
-                    scores_table.DATE_COL + " DESC, " + scores_table.TIME_COL + " DESC"
-            );
-
-            // manage the cursor
-            if (cursor == null) return;
-            else if (!cursor.moveToFirst()) {
-                cursor.close();
-                return;
-            }
-
-            // find the active instances of our widget
-            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-            ComponentName latestFixtureWidget = new ComponentName(this, LatestFixtureProvider.class);
-            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(latestFixtureWidget);
-            // loop through all our active widget instances
-            for (int widgetId : appWidgetIds)
-                setLatestFixtureView(cursor, appWidgetManager, widgetId);
-            cursor.close();
-        }
+        Log.i(LOG_TAG, "onHandleIntent Service Called");
     }
 
 
-    private void setLatestFixtureView(Cursor cursor, AppWidgetManager appWidgetManager, int widgetId) {
+    @Override
+    public void onStart(Intent intent, int startId) {
+        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            return;
+        }
 
+        // get most recent fixture
+        Uri uri = scores_table.buildMostRecentScore();
+        Cursor cursor = getContentResolver().query(
+                uri,
+                null,
+                null,
+                new String[]{Utility.getTodayLocaleDate()},
+                scores_table.DATE_COL + " DESC, " + scores_table.TIME_COL + " DESC"
+        );
+
+        // manage the cursor
+        if (cursor == null) return;
+        else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return;
+        }
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+        setLatestFixtureView(cursor, appWidgetManager, appWidgetId);
+        cursor.close();
+    }
+
+    private void setLatestFixtureView(Cursor cursor, AppWidgetManager appWidgetManager, int widgetId) {
         final RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.latest_fixture_widget);
-        // set the latest fixture view information
-        FootballUtils.setFixtureView(getApplicationContext(), views,cursor);
+        int[] appWidgetIds = {widgetId};
+        FootballUtils.setFixtureView(getApplicationContext(), views, cursor, appWidgetIds);
         processIntent(cursor, views);
         appWidgetManager.updateAppWidget(widgetId, views);
     }
 
     /**
-     * onclick on the widget launch the app and pass fixture details for date and position selection
+     * onclick on the widget launch the app and pass fixture details for date and position selection to MainActivity
      *
      * @param cursor of database having most recent fixture details
      * @param views  RemoteViews
@@ -99,5 +101,3 @@ public class LatestFixtureService extends IntentService {
     }
 
 }
-
-

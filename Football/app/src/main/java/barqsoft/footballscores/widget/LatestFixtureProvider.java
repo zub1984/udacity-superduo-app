@@ -1,10 +1,14 @@
 package barqsoft.footballscores.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.RemoteViews;
 
+import barqsoft.footballscores.R;
 import barqsoft.footballscores.service.FootballFetchService;
 import barqsoft.footballscores.utils.Constants;
 
@@ -23,25 +27,73 @@ import barqsoft.footballscores.utils.Constants;
         limitations under the License.*/
 
 public class LatestFixtureProvider extends AppWidgetProvider {
-
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-
-        // start the football data service to request the updated fixtures from the api
-        Intent intent = new Intent(context, FootballFetchService.class);
-        intent.setAction(Constants.FETCH_INFO);
-        context.startService(intent);
-    }
+    public static final String TAG = LatestFixtureProvider.class.getSimpleName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        // refresh the widget by starting the widget service that will reload the data from the database
         if (Constants.ACTION_FOOTBALL_SCORE_UPDATED.equals(intent.getAction())) {
-            Intent latestFixture = new Intent(context, LatestFixtureService.class);
-            latestFixture.setAction(Constants.ACTION_FOOTBALL_SCORE_UPDATE_RECEIVED);
-            context.startService(latestFixture);
+            //Log.i(TAG, "onReceive Called.");
         }
     }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId);
+        }
+    }
+
+    @Override
+    public void onEnabled(Context context) {
+        super.onEnabled(context);
+        Intent fetchIntent = new Intent(context, FootballFetchService.class);
+        fetchIntent.setAction(Constants.FETCH_INFO);
+        context.startService(fetchIntent);
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        Log.i(TAG, "onDeleted Called");
+        super.onDeleted(context, appWidgetIds);
+    }
+
+    @Override
+    public void onDisabled(Context context) {
+        Log.i(TAG, "onDisabled Called");
+        super.onDisabled(context);
+    }
+
+
+    /**
+     * Called in response to the {@link AppWidgetManager#ACTION_APPWIDGET_UPDATE}
+     * broadcasts when this AppWidget provider is being asked to provide
+     * {@link android.widget.RemoteViews RemoteViews}
+     * for a set of AppWidgets.
+     *
+     * @param context          The {@link android.content.Context Context} in which this receiver is
+     *                         running.
+     * @param appWidgetManager A {@link AppWidgetManager} object you can call {@link
+     *                         AppWidgetManager#updateAppWidget} on.
+     * @param appWidgetId      The appWidgetId for which an update is needed.
+     * @see AppWidgetManager#ACTION_APPWIDGET_UPDATE
+     */
+    private void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+        // Build the intent to call the service
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
+                R.layout.latest_fixture_widget);
+        Intent intent = new Intent(context, LatestFixtureService.class);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        // Set unique data for each pending intent, otherwise the system will replace the existing pending intent
+        intent.setAction(String.valueOf(appWidgetId));
+        // To react to a click we have to use a pending intent as the onClickListener is executed by the home screen application
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        remoteViews.setOnClickPendingIntent(R.id.latest_fixture_widget, pendingIntent);
+        // Tell the widget manager
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+        // Update the widgets via the service
+        context.startService(intent);
+    }
+
 }
