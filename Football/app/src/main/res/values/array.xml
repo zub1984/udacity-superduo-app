@@ -24,13 +24,12 @@
         <item>@integer/league_serie_a_code</item>
         <item>@integer/league_eredivisie_code</item>
         <item>@integer/league_champions_league_code</item>
-
-        <!--<item>@integer/league_segunda_division_code</item>-->
-        <!--<item>@integer/league_primeira_liga_code</item>-->
-        <!--<item>@integer/league_bundesliga_3_code</item>-->
-        <!--<item>@integer/league_bundesliga_2_code</item>-->
-        <!--<item>@integer/league_ligue_1_code</item>-->
-        <!--<item>@integer/league_ligue_2_code</item>-->
+        <item>@integer/league_segunda_division_code</item>
+        <item>@integer/league_primeira_liga_code</item>
+        <item>@integer/league_bundesliga_3_code</item>
+        <item>@integer/league_bundesliga_2_code</item>
+        <item>@integer/league_ligue_1_code</item>
+        <item>@integer/league_ligue_2_code</item>
 
     </integer-array>
 

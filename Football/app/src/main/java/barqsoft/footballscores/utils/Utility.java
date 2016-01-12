@@ -3,9 +3,9 @@ package barqsoft.footballscores.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerTabStrip;
@@ -21,7 +21,7 @@ import java.util.Set;
 
 import barqsoft.footballscores.R;
 
-/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nanodegree course.
+/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nano degree course.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import barqsoft.footballscores.R;
         limitations under the License.*/
 public class Utility {
 
-    public static final int CHAMPIONS_LEAGUE = 362;
+    public static final int CHAMPIONS_LEAGUE = 405;
 
     public static String getMatchDay(int match_day, int league_num) {
         if (league_num == CHAMPIONS_LEAGUE) {
@@ -94,13 +94,13 @@ public class Utility {
      * @param height  int
      * @return Bitmap
      */
-    public static Bitmap scaleBitmapImage(Context context, Bitmap bitmap, int height) {
+    /*public static Bitmap scaleBitmapImage(Context context, Bitmap bitmap, int height) {
         final float densityMultiplier = context.getResources().getDisplayMetrics().density;
         int newHeight = (int) (height * densityMultiplier);
         int newWidth = (int) (newHeight * bitmap.getWidth() / ((double) bitmap.getHeight()));
         bitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
         return bitmap;
-    }
+    }*/
 
     /**
      * function to get today locale date.
@@ -116,8 +116,6 @@ public class Utility {
 
     /**
      * function to set pager tab left and right padding for 16dp
-     *
-     * @return void
      */
     public static void setPagerTabStrip(View rootView, Context context) {
         PagerTabStrip strip = (PagerTabStrip) rootView.findViewById(R.id.pager_header);
@@ -146,7 +144,7 @@ public class Utility {
             }
         } else {
             // else get language codes
-            Set<String> lang = new HashSet<String>();
+            Set<String> lang = new HashSet<>();
             lang.add("ar");
             lang.add("dv");
             lang.add("fa");
@@ -162,6 +160,10 @@ public class Utility {
             rtl = RTL.contains(locale.getLanguage());
         }
         return rtl;
+    }
+
+    public static String builtURI(String uri) {
+        return Uri.parse(uri).buildUpon().toString();
     }
 
 }

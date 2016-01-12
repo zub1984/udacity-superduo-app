@@ -32,13 +32,14 @@ public class LatestFixtureProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (Constants.ACTION_FOOTBALL_SCORE_UPDATED.equals(intent.getAction())) {
-            //Log.i(TAG, "onReceive Called.");
-        }
+        /*if (Constants.ACTION_FOOTBALL_SCORE_UPDATED.equals(intent.getAction())) {
+            Log.i(TAG, "onReceive Called.");
+        }*/
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        //Log.i(TAG, "onUpdate Called.");
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -187,19 +189,37 @@ public class FootballUtils {
      * Asynchronously fulfills the request into the specified {@link RemoteViews} object with the
      * given {@code viewId}. This is used for loading bitmaps into all instances of a widget.
      */
-    private static void setPicasso(@NonNull Context context, RemoteViews views, int viewId,@NonNull String imageUrl, int[] appWidgetIds) {
-        Picasso.with(context)
-                .load(imageUrl)
-                .into(views, viewId, appWidgetIds);
+    private static void setPicasso(@NonNull Context context, RemoteViews views, int viewId, @NonNull String imageUrl, int[] appWidgetIds) {
+        // refer https://github.com/square/picasso/issues/587
+        /*Picasso.with(context)
+                .load(Utility.builtURI(imageUrl))
+                .into(views, viewId, appWidgetIds);*/
+        /**
+         * To fix the issue of Picasso call from "RemoteViews getViewAt(int position)"
+         * need to change the code as app is crashing for today widget while image loading Picasso bug
+         * java.lang.IllegalStateException: Method call should happen from the main thread.
+         *
+         2nd option : use Glide for image loading on RemoteView.
+         *
+         */
+
+        try {
+            Bitmap logoBitmap = Picasso.with(context).load(Utility.builtURI(imageUrl)).get();
+            views.setImageViewBitmap(viewId, logoBitmap);
+        } catch (IOException e) {
+            views.setImageViewResource(viewId, R.drawable.football);
+            e.printStackTrace();
+        }
+
     }
 
 
     /**
      * method to set fixture view information
      *
-     * @param context application context
-     * @param views   remote view to set the data.
-     * @param cursor  having information from database
+     * @param context      application context
+     * @param views        remote view to set the data.
+     * @param cursor       having information from database
      * @param appWidgetIds to display in remoteView
      */
     public static void setFixtureView(Context context, RemoteViews views, Cursor cursor, int[] appWidgetIds) {

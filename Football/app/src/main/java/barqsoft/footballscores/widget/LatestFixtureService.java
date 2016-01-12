@@ -43,10 +43,47 @@ public class LatestFixtureService extends IntentService {
     @Override
     protected void onHandleIntent(@NonNull Intent intent) {
         Log.i(LOG_TAG, "onHandleIntent Service Called");
+
+        int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
+            return;
+        }
+
+        // get most recent fixture
+        Uri uri = scores_table.buildMostRecentScore();
+        Cursor cursor = getContentResolver().query(
+                uri,
+                null,
+                null,
+                new String[]{Utility.getTodayLocaleDate()},
+                scores_table.DATE_COL + " DESC, " + scores_table.TIME_COL + " DESC"
+        );
+
+        // manage the cursor
+        if (cursor == null) return;
+        else if (!cursor.moveToFirst()) {
+            cursor.close();
+            return;
+        }
+
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
+        setLatestFixtureView(cursor, appWidgetManager, appWidgetId);
+        cursor.close();
+
+
     }
 
 
-    @Override
+    /**
+     * https://github.com/square/picasso/issues/587
+     * To fix the issue of Picasso call from "RemoteViews getViewAt(int position)"
+     * need to change the code as app is crashing for today widget while image loading, it's Picasso bug
+     * java.lang.IllegalStateException: Method call should happen from the main thread.
+     * <p/>
+     * 2nd option : use Glide for image loading on RemoteView.
+     */
+
+    /*@Override
     public void onStart(Intent intent, int startId) {
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -73,8 +110,7 @@ public class LatestFixtureService extends IntentService {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
         setLatestFixtureView(cursor, appWidgetManager, appWidgetId);
         cursor.close();
-    }
-
+    }*/
     private void setLatestFixtureView(Cursor cursor, AppWidgetManager appWidgetManager, int widgetId) {
         final RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.latest_fixture_widget);
         int[] appWidgetIds = {widgetId};

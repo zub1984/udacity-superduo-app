@@ -24,7 +24,7 @@ import barqsoft.footballscores.utils.Utility;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nanodegree course.
+/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nano degree course.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -64,27 +64,38 @@ public class ScoresAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         final ViewHolder mHolder = (ViewHolder) view.getTag();
-
         //DatabaseUtils.dumpCursor(cursor);
         String homeTeamName = cursor.getString(cursor.getColumnIndex(scores_table.HOME_COL));
         mHolder.home_name.setText(homeTeamName);
-        Picasso.with(context)
-                .load(cursor.getString(cursor.getColumnIndex(scores_table.HOME_LOGO_COL)))
-                .placeholder(R.drawable.football)
-                .error(R.drawable.football)
-                .into(mHolder.home_crest);
-        mHolder.home_crest.setContentDescription(homeTeamName);
 
+        //to avoid App crash if home team logo URL is blank
+        String homeTeamLogoUri = cursor.getString(cursor.getColumnIndex(scores_table.HOME_LOGO_COL));
+        if (null != homeTeamLogoUri && homeTeamLogoUri.length() > 0) {
+            Picasso.with(context)
+                    .load(Utility.builtURI(homeTeamLogoUri))
+                    .placeholder(R.drawable.football)
+                    .error(R.drawable.football)
+                    .into(mHolder.home_crest);
+            mHolder.home_crest.setContentDescription(homeTeamName);
+        } else {
+            mHolder.away_crest.setImageResource(R.drawable.football);
+        }
 
         String awayTeamName = cursor.getString(cursor.getColumnIndex(scores_table.AWAY_COL));
         mHolder.away_name.setText(awayTeamName);
-        Picasso.with(context)
-                .load(cursor.getString(cursor.getColumnIndex(scores_table.AWAY_LOGO_COL)))
-                .placeholder(R.drawable.football)
-                .error(R.drawable.football)
-                .into(mHolder.away_crest);
-        mHolder.away_crest.setContentDescription(awayTeamName);
+        String awayTeamLogoUri = cursor.getString(cursor.getColumnIndex(scores_table.AWAY_LOGO_COL));
+        //fix the issue of app crash when away team logo URL is blank
+        if (null != awayTeamLogoUri && awayTeamLogoUri.length() > 0) {
+            Picasso.with(context)
+                    .load(Utility.builtURI(awayTeamLogoUri))
+                    .placeholder(R.drawable.football)
+                    .error(R.drawable.football)
+                    .into(mHolder.away_crest);
+        } else {
+            mHolder.away_crest.setImageResource(R.drawable.football);
+        }
 
+        mHolder.away_crest.setContentDescription(awayTeamName);
         mHolder.date.setText(cursor.getString(cursor.getColumnIndex(scores_table.TIME_COL)));
         mHolder.score.setText(Utility.getScores(cursor.getInt(cursor.getColumnIndex(scores_table.HOME_GOALS_COL)),
                 cursor.getInt(cursor.getColumnIndex(scores_table.AWAY_GOALS_COL))));
@@ -97,6 +108,7 @@ public class ScoresAdapter extends CursorAdapter {
         if (mHolder.match_id == detail_match_id) {
             container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             ButterKnife.bind(this, container);
+
             matchDayTextView.setText(Utility.getMatchDay(cursor.getInt(cursor.getColumnIndex(scores_table.MATCH_DAY)),
                     cursor.getInt(cursor.getColumnIndex(scores_table.LEAGUE_COL))));
 
@@ -119,7 +131,7 @@ public class ScoresAdapter extends CursorAdapter {
     /**
      * function to create share action
      *
-     * @param ShareText  text message to share
+     * @param ShareText text message to share
      * @return Intent type of share action.
      */
     @SuppressLint("InlinedApi")
