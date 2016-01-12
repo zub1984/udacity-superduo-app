@@ -25,7 +25,8 @@ Android 4.1 Jelly Bean or later (API level 16)
 * M05 - Added functionality of book scan with bar code
 * M06 - Added error code handling for no internet, bad response, IO error ..etc
 * M07 - Optimized UI based on material design guidelines
-* M08 - updated libraries for butter knife, piccaso and stetho 
+* M08 - updated libraries for butter knife, piccaso and stetho
+* M09 - add accesibility and localization support 
 
 
 ##Football 1.0
@@ -39,7 +40,9 @@ The Football app uses the Football-data.org Api to retrieve the fixtures- and te
 
 
 #####Requirements
-Android 3.0 Honeycomb or later (API level 11)
+API Level: 16 Android 4.1 (JELLY_BEAN)
+Please replace the API_KEY with your personal key from Football-data.org
+<string name="api_key" translatable="false">[API_KEY]</string>
 
 
 #####Fixes
@@ -48,6 +51,10 @@ Android 3.0 Honeycomb or later (API level 11)
 * J03 - Optimized UI for layout re-use
 * J04 - added wigets for today and latest scores.
 * J05 - added functionality to get team names and logo dynamically from server based on league's
+* J06 - fix the issue of app crashing when server returns home or away team logo URL as blank
+* J07 - fix the issue of Picasso while loading the image on remoteView with worker thread
+* J08 - parse the URL while making network call to avoid URL malform exception because of special characters in logo URL
+* J09 - add accesibility and localization support 
 
 
 

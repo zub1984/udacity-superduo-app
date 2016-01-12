@@ -189,7 +189,7 @@ public class FootballUtils {
      * Asynchronously fulfills the request into the specified {@link RemoteViews} object with the
      * given {@code viewId}. This is used for loading bitmaps into all instances of a widget.
      */
-    private static void setPicasso(@NonNull Context context, RemoteViews views, int viewId, @NonNull String imageUrl, int[] appWidgetIds) {
+    private static void setPicasso(@NonNull Context context, RemoteViews views, int viewId, @NonNull String imageUrl) {
         // refer https://github.com/square/picasso/issues/587
         /*Picasso.with(context)
                 .load(Utility.builtURI(imageUrl))
@@ -204,9 +204,15 @@ public class FootballUtils {
          */
 
         try {
-            Bitmap logoBitmap = Picasso.with(context).load(Utility.builtURI(imageUrl)).get();
-            views.setImageViewBitmap(viewId, logoBitmap);
-        } catch (IOException e) {
+            //java.lang.IllegalArgumentException: Path must not be empty
+            if (imageUrl.length() > 0) {
+                Bitmap logoBitmap = Picasso.with(context).load(Utility.builtURI(imageUrl)).get();
+                views.setImageViewBitmap(viewId, logoBitmap);
+            } else {
+                views.setImageViewResource(viewId, R.drawable.football);
+            }
+
+        } catch (IOException | IllegalArgumentException e) {
             views.setImageViewResource(viewId, R.drawable.football);
             e.printStackTrace();
         }
@@ -220,11 +226,10 @@ public class FootballUtils {
      * @param context      application context
      * @param views        remote view to set the data.
      * @param cursor       having information from database
-     * @param appWidgetIds to display in remoteView
      */
-    public static void setFixtureView(Context context, RemoteViews views, Cursor cursor, int[] appWidgetIds) {
+    public static void setFixtureView(Context context, RemoteViews views, Cursor cursor) {
 
-        setPicasso(context, views, R.id.home_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_LOGO_COL)), appWidgetIds);
+        setPicasso(context, views, R.id.home_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_LOGO_COL)));
 
         String homeTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.HOME_COL));
         views.setTextViewText(R.id.home_name, homeTeamName);
@@ -241,7 +246,7 @@ public class FootballUtils {
         views.setTextColor(R.id.date_textview, ContextCompat.getColor(context, R.color.secondary_text));
 
         // away team logo and name
-        setPicasso(context, views, R.id.away_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_LOGO_COL)), appWidgetIds);
+        setPicasso(context, views, R.id.away_crest, cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_LOGO_COL)));
 
         String awayTeamName = cursor.getString(cursor.getColumnIndex(DatabaseContract.scores_table.AWAY_COL));
         views.setTextViewText(R.id.away_name, awayTeamName);

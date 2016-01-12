@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
@@ -19,7 +18,7 @@ import barqsoft.footballscores.utils.FootballUtils;
 import barqsoft.footballscores.utils.Utility;
 
 
-/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nanodegree course.
+/*Copyright (C) 2015  Mohammad Jubair Khan (zub1984.kn@gmail.com) - Football Scores Project of Udacity Nano degree course.
 
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -34,7 +33,7 @@ import barqsoft.footballscores.utils.Utility;
         limitations under the License.*/
 
 public class LatestFixtureService extends IntentService {
-    private static final String LOG_TAG = LatestFixtureService.class.getSimpleName();
+    //private static final String LOG_TAG = LatestFixtureService.class.getSimpleName();
 
     public LatestFixtureService() {
         super("LatestFixtureService");
@@ -42,7 +41,7 @@ public class LatestFixtureService extends IntentService {
 
     @Override
     protected void onHandleIntent(@NonNull Intent intent) {
-        Log.i(LOG_TAG, "onHandleIntent Service Called");
+        //Log.i(LOG_TAG, "onHandleIntent Service Called");
 
         int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -113,8 +112,7 @@ public class LatestFixtureService extends IntentService {
     }*/
     private void setLatestFixtureView(Cursor cursor, AppWidgetManager appWidgetManager, int widgetId) {
         final RemoteViews views = new RemoteViews(getApplicationContext().getPackageName(), R.layout.latest_fixture_widget);
-        int[] appWidgetIds = {widgetId};
-        FootballUtils.setFixtureView(getApplicationContext(), views, cursor, appWidgetIds);
+        FootballUtils.setFixtureView(getApplicationContext(), views, cursor);
         processIntent(cursor, views);
         appWidgetManager.updateAppWidget(widgetId, views);
     }
